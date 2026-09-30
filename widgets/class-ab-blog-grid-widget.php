@@ -264,7 +264,7 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 		$this->start_controls_section(
 			'section_layout',
 			array(
-				'label' => esc_html__( 'Card Layout & Elements', 'ab-addon' ),
+				'label' => esc_html__( 'Card Layout', 'ab-addon' ),
 				'tab'   => Controls_Manager::TAB_CONTENT,
 			)
 		);

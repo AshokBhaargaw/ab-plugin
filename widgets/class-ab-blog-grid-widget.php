@@ -708,6 +708,19 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 			)
 		);
 
+		$this->add_control(
+			'image_sizing_method',
+			array(
+				'label'   => esc_html__( 'Sizing Method', 'ab-addon' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'height',
+				'options' => array(
+					'height' => esc_html__( 'Image Height', 'ab-addon' ),
+					'ratio'  => esc_html__( 'Image Ratio', 'ab-addon' ),
+				),
+			)
+		);
+
 		$this->add_responsive_control(
 			'image_height',
 			array(
@@ -720,10 +733,37 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 				),
 				'default'     => array(
 					'unit' => 'px',
-					'size' => 190,
+					'size' => 160,
+				),
+				'condition'   => array(
+					'image_sizing_method' => 'height',
 				),
 				'selectors'   => array(
 					'{{WRAPPER}} .ab-card-media' => 'height: {{SIZE}}{{UNIT}} !important; min-height: {{SIZE}}{{UNIT}} !important; max-height: {{SIZE}}{{UNIT}} !important; aspect-ratio: unset !important;',
+					'{{WRAPPER}} .ab-card-media .ab-card-image-link' => 'position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; display: block !important;',
+					'{{WRAPPER}} .ab-card-media img, {{WRAPPER}} .ab-card-img' => 'width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; display: block !important;',
+				),
+			)
+		);
+
+		$this->add_control(
+			'image_style_ratio',
+			array(
+				'label'     => esc_html__( 'Aspect Ratio', 'ab-addon' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => '16/9',
+				'options'   => array(
+					'16/9' => esc_html__( '16:9 Landscape', 'ab-addon' ),
+					'4/3'  => esc_html__( '4:3 Standard', 'ab-addon' ),
+					'1/1'  => esc_html__( '1:1 Square', 'ab-addon' ),
+					'3/4'  => esc_html__( '3:4 Portrait', 'ab-addon' ),
+					'21/9' => esc_html__( '21:9 Ultrawide', 'ab-addon' ),
+				),
+				'condition' => array(
+					'image_sizing_method' => 'ratio',
+				),
+				'selectors' => array(
+					'{{WRAPPER}} .ab-card-media' => 'aspect-ratio: {{VALUE}} !important; height: auto !important; min-height: 0 !important; max-height: none !important;',
 					'{{WRAPPER}} .ab-card-media .ab-card-image-link' => 'position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; display: block !important;',
 					'{{WRAPPER}} .ab-card-media img, {{WRAPPER}} .ab-card-img' => 'width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; display: block !important;',
 				),

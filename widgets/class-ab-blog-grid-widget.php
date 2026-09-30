@@ -305,22 +305,6 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 		);
 
 		$this->add_control(
-			'image_aspect_ratio',
-			array(
-				'label'   => esc_html__( 'Image Ratio', 'ab-addon' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'ratio-16-9',
-				'options' => array(
-					'ratio-16-9' => '16:9 Landscape',
-					'ratio-4-3'  => '4:3 Standard',
-					'ratio-1-1'  => '1:1 Square',
-					'ratio-3-4'  => '3:4 Portrait',
-					'ratio-auto' => 'Auto Original',
-				),
-			)
-		);
-
-		$this->add_control(
 			'show_image',
 			array(
 				'label'        => esc_html__( 'Featured Image', 'ab-addon' ),
@@ -1240,7 +1224,7 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 			'ab-blog-grid',
 			'ab-grid-cols-' . ( isset( $settings['columns'] ) ? $settings['columns'] : '3' ),
 			'ab-style-' . ( ! empty( $settings['card_style'] ) ? $settings['card_style'] : 'modern' ),
-			'ab-ratio-' . ( ! empty( $settings['image_aspect_ratio'] ) ? str_replace( 'ratio-', '', $settings['image_aspect_ratio'] ) : '16-9' ),
+			'ab-ratio-' . ( ! empty( $settings['image_style_ratio'] ) ? str_replace( '/', '-', $settings['image_style_ratio'] ) : '16-9' ),
 		);
 
 		if ( 'yes' === $settings['card_hover_lift'] ) {
@@ -1258,7 +1242,9 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 			'offset'               => $offset,
 			'columns'              => isset( $settings['columns'] ) ? $settings['columns'] : '3',
 			'card_style'           => $settings['card_style'],
-			'image_aspect_ratio'   => $settings['image_aspect_ratio'],
+			'image_sizing_method'  => ! empty( $settings['image_sizing_method'] ) ? $settings['image_sizing_method'] : 'height',
+			'image_height'         => ! empty( $settings['image_height']['size'] ) ? $settings['image_height']['size'] : 160,
+			'image_style_ratio'    => ! empty( $settings['image_style_ratio'] ) ? $settings['image_style_ratio'] : '16/9',
 			'show_image'           => $settings['show_image'],
 			'show_badge'           => $settings['show_badge'],
 			'show_title'           => $settings['show_title'],
@@ -1376,7 +1362,7 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 		$title          = get_the_title( $post_id );
 		$title_tag      = ! empty( $settings['title_tag'] ) ? $settings['title_tag'] : 'h3';
 		$card_style     = ! empty( $settings['card_style'] ) ? $settings['card_style'] : ( ! empty( $settings['card_design'] ) ? $settings['card_design'] : 'modern' );
-		$ratio_class    = ! empty( $settings['image_aspect_ratio'] ) ? $settings['image_aspect_ratio'] : 'ratio-16-9';
+		$ratio_class    = ! empty( $settings['image_style_ratio'] ) ? 'ratio-' . str_replace( '/', '-', $settings['image_style_ratio'] ) : 'ratio-16-9';
 
 		$show_image     = isset( $settings['show_image'] ) ? $settings['show_image'] : 'yes';
 		$show_badge     = isset( $settings['show_badge'] ) ? $settings['show_badge'] : 'yes';

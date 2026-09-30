@@ -709,18 +709,23 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 		);
 
 		$this->add_responsive_control(
-			'image_custom_height',
+			'image_height',
 			array(
-				'label'       => esc_html__( 'Custom Height', 'ab-addon' ),
+				'label'       => esc_html__( 'Image Height', 'ab-addon' ),
 				'type'        => Controls_Manager::SLIDER,
 				'size_units'  => array( 'px', 'vh' ),
 				'range'       => array(
-					'px' => array( 'min' => 100, 'max' => 600 ),
+					'px' => array( 'min' => 80, 'max' => 600 ),
 					'vh' => array( 'min' => 10, 'max' => 60 ),
 				),
-				'description' => esc_html__( 'Optional: overrides aspect ratio with a fixed height.', 'ab-addon' ),
+				'default'     => array(
+					'unit' => 'px',
+					'size' => 190,
+				),
 				'selectors'   => array(
-					'{{WRAPPER}} .ab-card-media' => 'height: {{SIZE}}{{UNIT}} !important; aspect-ratio: auto !important;',
+					'{{WRAPPER}} .ab-card-media' => 'height: {{SIZE}}{{UNIT}} !important; min-height: {{SIZE}}{{UNIT}} !important; max-height: {{SIZE}}{{UNIT}} !important; aspect-ratio: unset !important;',
+					'{{WRAPPER}} .ab-card-media .ab-card-image-link' => 'position: absolute !important; inset: 0 !important; width: 100% !important; height: 100% !important; display: block !important;',
+					'{{WRAPPER}} .ab-card-media img, {{WRAPPER}} .ab-card-img' => 'width: 100% !important; height: 100% !important; max-width: 100% !important; max-height: 100% !important; display: block !important;',
 				),
 			)
 		);
@@ -732,12 +737,26 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 				'type'      => Controls_Manager::SELECT,
 				'default'   => 'cover',
 				'options'   => array(
-					'cover'   => esc_html__( 'Cover', 'ab-addon' ),
-					'contain' => esc_html__( 'Contain', 'ab-addon' ),
-					'fill'    => esc_html__( 'Fill', 'ab-addon' ),
+					'cover'      => esc_html__( 'Cover', 'ab-addon' ),
+					'contain'    => esc_html__( 'Contain', 'ab-addon' ),
+					'fill'       => esc_html__( 'Fill', 'ab-addon' ),
+					'scale-down' => esc_html__( 'Scale Down', 'ab-addon' ),
+					'none'       => esc_html__( 'None', 'ab-addon' ),
 				),
 				'selectors' => array(
 					'{{WRAPPER}} .ab-card-img, {{WRAPPER}} .ab-card-media img' => 'object-fit: {{VALUE}} !important;',
+				),
+			)
+		);
+
+		$this->add_control(
+			'image_box_bg',
+			array(
+				'label'     => esc_html__( 'Image Box Background', 'ab-addon' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#f3f4f6',
+				'selectors' => array(
+					'{{WRAPPER}} .ab-card-media' => 'background-color: {{VALUE}};',
 				),
 			)
 		);

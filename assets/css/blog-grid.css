@@ -219,26 +219,33 @@
 .ab-card-media {
   position: relative;
   width: 100%;
+  height: 190px;
   overflow: hidden;
   background-color: #f3f4f6;
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 
-/* Aspect Ratio via modern aspect-ratio property */
+/* Aspect Ratio Presets */
 .ab-card-media.ratio-16-9 {
   aspect-ratio: 16 / 9;
+  height: auto;
 }
 .ab-card-media.ratio-4-3 {
   aspect-ratio: 4 / 3;
+  height: auto;
 }
 .ab-card-media.ratio-1-1 {
   aspect-ratio: 1 / 1;
+  height: auto;
 }
 .ab-card-media.ratio-3-4 {
   aspect-ratio: 3 / 4;
+  height: auto;
 }
 .ab-card-media.ratio-auto {
   aspect-ratio: auto;
+  height: 190px;
 }
 
 /* Image link fills the entire media container */
@@ -250,15 +257,10 @@
   height: 100%;
 }
 
-/* For ratio-auto, the link is in normal flow (no explicit height on parent) */
-.ab-card-media.ratio-auto .ab-card-image-link {
-  position: relative;
-  height: auto;
-}
-
-.ab-card-media:not(.ratio-auto) .ab-card-img,
-.ab-card-media:not(.ratio-auto) .ab-card-image-link img,
-.ab-card-img {
+/* Image fills the media container completely so object-fit works 100% reliably */
+.ab-card-img,
+.ab-card-media img,
+.ab-card-image-link img {
   width: 100% !important;
   height: 100% !important;
   max-width: 100% !important;
@@ -267,14 +269,6 @@
   object-position: center;
   transition: transform 0.5s ease;
   display: block !important;
-}
-
-/* For ratio-auto, let the image define height naturally */
-.ab-card-media.ratio-auto .ab-card-img,
-.ab-card-media.ratio-auto .ab-card-image-link img {
-  width: 100% !important;
-  height: auto !important;
-  max-height: none !important;
 }
 
 .ab-card-item:hover .ab-card-img {

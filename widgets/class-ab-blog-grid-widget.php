@@ -1043,7 +1043,7 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 			Group_Control_Typography::get_type(),
 			array(
 				'name'     => 'title_typography',
-				'selector' => '{{WRAPPER}} .ab-card-title',
+				'selector' => '{{WRAPPER}} .ab-card-title, {{WRAPPER}} .ab-card-title a',
 			)
 		);
 

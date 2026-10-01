@@ -75,9 +75,11 @@ final class AB_Addon_Elementor {
 	public function register_widgets( $widgets_manager ) {
 		require_once AB_ADDON_PATH . 'widgets/class-ab-blog-grid-widget.php';
 		require_once AB_ADDON_PATH . 'widgets/class-ab-basic-posts-widget.php';
+		require_once AB_ADDON_PATH . 'widgets/class-ab-popup-widget.php';
 
 		$widgets_manager->register( new \AB_Blog_Grid_Widget() );
 		$widgets_manager->register( new \AB_Basic_Posts_Widget() );
+		$widgets_manager->register( new \AB_Popup_Widget() );
 	}
 
 	public function enqueue_frontend_assets() {
@@ -88,9 +90,24 @@ final class AB_Addon_Elementor {
 			AB_ADDON_VERSION
 		);
 
+		wp_register_style(
+			'ab-popup-style',
+			AB_ADDON_URL . 'assets/css/popup.css',
+			array(),
+			AB_ADDON_VERSION
+		);
+
 		wp_enqueue_script(
 			'ab-blog-grid-script',
 			AB_ADDON_URL . 'assets/js/blog-grid.js',
+			array( 'jquery' ),
+			AB_ADDON_VERSION,
+			true
+		);
+
+		wp_register_script(
+			'ab-popup-script',
+			AB_ADDON_URL . 'assets/js/popup.js',
 			array( 'jquery' ),
 			AB_ADDON_VERSION,
 			true

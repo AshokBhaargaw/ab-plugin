@@ -788,6 +788,10 @@ class AB_Popup_Widget extends Widget_Base {
 
 		<div class="ab-popup-trigger-wrapper" id="<?php echo esc_attr( $popup_id . '-wrapper' ); ?>" <?php echo $data_attrs; // phpcs:ignore ?>>
 
+			<?php if ( \Elementor\Plugin::$instance->editor && \Elementor\Plugin::$instance->editor->is_edit_mode() ) : ?>
+			<?php $this->render_editor_notice( $popup_type ); ?>
+			<?php endif; ?>
+
 			<?php if ( in_array( $popup_type, array( 'modal', 'exit_intent' ), true ) ) : ?>
 
 			<div class="ab-popup-overlay<?php echo $popup_type === 'exit_intent' ? ' ab-popup-exit-intent' : ''; ?>"
@@ -800,7 +804,7 @@ class AB_Popup_Widget extends Widget_Base {
 					<?php if ( $show_close ) : ?>
 					<button class="ab-popup-close" aria-label="<?php esc_attr_e( 'Close popup', 'ab-addon' ); ?>">&#x2715;</button>
 					<?php endif; ?>
-					<?php $this->render_content( $settings, $content_type ); ?>
+					<?php $this->render_popup_content( $settings, $content_type ); ?>
 				</div>
 			</div>
 
@@ -815,7 +819,7 @@ class AB_Popup_Widget extends Widget_Base {
 					<?php if ( $show_close ) : ?>
 					<button class="ab-popup-close" aria-label="<?php esc_attr_e( 'Dismiss', 'ab-addon' ); ?>">&#x2715;</button>
 					<?php endif; ?>
-					<?php $this->render_content( $settings, $content_type ); ?>
+					<?php $this->render_popup_content( $settings, $content_type ); ?>
 				</div>
 			</div>
 
@@ -826,12 +830,50 @@ class AB_Popup_Widget extends Widget_Base {
 	}
 
 	/**
+	 * Elementor editor JS template (required by Elementor for the panel).
+	 * Renders a simple placeholder so the widget is visible in the canvas.
+	 */
+	protected function content_template() {
+		?>
+		<#
+		var type  = settings.popup_type || 'modal';
+		var label = type === 'modal' ? 'Modal Popup' : ( type === 'notification' ? 'Notification Banner' : 'Exit Intent Popup' );
+		#>
+		<div style="display:flex;align-items:center;gap:10px;padding:14px 18px;background:#f0f0ff;border:2px dashed #6c63ff;border-radius:10px;font-family:sans-serif;">
+			<span style="font-size:22px;">🪟</span>
+			<div>
+				<strong style="color:#6c63ff;font-size:13px;">AB Popup — {{ label }}</strong><br>
+				<span style="color:#888;font-size:11px;">Popup is hidden on the frontend and will appear based on the trigger you set.</span>
+			</div>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Renders a visible editor placeholder when widget is in the Elementor canvas.
+	 * The actual popup overlay is output after it.
+	 */
+	protected function render_editor_notice( $popup_type ) {
+		$labels = array(
+			'modal'        => '🪟 Modal Popup',
+			'notification' => '🔔 Notification Banner',
+			'exit_intent'  => '🚪 Exit Intent Popup',
+		);
+		$label = isset( $labels[ $popup_type ] ) ? $labels[ $popup_type ] : '🪟 Popup';
+		echo '<div style="display:flex;align-items:center;gap:10px;padding:14px 18px;background:#f0f0ff;border:2px dashed #6c63ff;border-radius:10px;font-family:sans-serif;">';
+		echo '<span style="font-size:22px;">🪟</span>';
+		echo '<div><strong style="color:#6c63ff;font-size:13px;">' . esc_html( $label ) . '</strong><br>';
+		echo '<span style="color:#888;font-size:11px;">Hidden on frontend — opens based on your trigger setting.</span></div>';
+		echo '</div>';
+	}
+
+	/**
 	 * Renders the inner content of the popup box.
 	 *
 	 * @param array  $settings     Widget settings.
 	 * @param string $content_type Selected content type.
 	 */
-	protected function render_content( $settings, $content_type ) {
+	protected function render_popup_content( $settings, $content_type ) {
 		if ( $content_type === 'custom_html' ) {
 			echo wp_kses_post( $settings['custom_html'] ); // phpcs:ignore
 			return;

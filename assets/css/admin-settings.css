@@ -1,0 +1,424 @@
+/* ==========================================================================
+   AB Settings Admin Page Styles
+   ========================================================================== */
+
+/* ---------- Page Wrapper ---------- */
+.ab-settings-wrap {
+  max-width: 1200px;
+}
+
+/* ---------- Header ---------- */
+.ab-settings-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #6c63ff 0%, #574fd6 100%);
+  border-radius: 12px;
+  margin: 16px 0 24px;
+  color: #fff;
+}
+
+.ab-settings-header__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ab-settings-header__logo .dashicons {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: #fff;
+}
+
+.ab-settings-header h1 {
+  color: #fff !important;
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.ab-settings-header__desc {
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ---------- Toolbar ---------- */
+.ab-settings-toolbar {
+  margin-bottom: 20px;
+}
+
+.ab-btn-new {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+
+.ab-btn-new .dashicons {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+}
+
+/* ---------- Empty State ---------- */
+.ab-empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: #fff;
+  border: 2px dashed #d0d0e0;
+  border-radius: 12px;
+  color: #555;
+}
+
+.ab-empty-icon {
+  font-size: 56px !important;
+  width: 56px !important;
+  height: 56px !important;
+  color: #c0bfff;
+  margin-bottom: 12px;
+}
+
+.ab-empty-state h2 {
+  font-size: 20px;
+  color: #333;
+  margin: 0 0 8px;
+}
+
+/* ---------- Popup Card Grid ---------- */
+.ab-popup-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.ab-popup-card {
+  background: #fff;
+  border: 1px solid #e0e0ef;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(108, 99, 255, 0.06);
+  transition: box-shadow 0.2s;
+}
+
+.ab-popup-card:hover {
+  box-shadow: 0 4px 20px rgba(108, 99, 255, 0.14);
+}
+
+.ab-popup-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.ab-popup-card__icon {
+  font-size: 28px;
+  line-height: 1;
+}
+
+.ab-popup-card__title {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.ab-popup-card__type {
+  font-size: 12px;
+  color: #6c63ff;
+  font-weight: 500;
+  background: #f0f0ff;
+  padding: 2px 8px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.ab-popup-card__meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+/* ---------- Shortcode Field ---------- */
+.ab-popup-card__shortcode,
+.ab-info-box .ab-shortcode-field {
+  margin-bottom: 14px;
+}
+
+.ab-popup-card__shortcode label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.ab-shortcode-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ab-shortcode-code {
+  flex: 1;
+  background: #f4f4fb;
+  border: 1px solid #e0e0ef;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: #4a4a8a;
+  font-family: "Courier New", monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+}
+
+.ab-copy-btn {
+  background: #6c63ff !important;
+  border: none !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0 !important;
+  flex-shrink: 0;
+  transition: background 0.2s !important;
+}
+
+.ab-copy-btn:hover {
+  background: #574fd6 !important;
+}
+
+.ab-copy-btn .dashicons {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Card Actions ---------- */
+.ab-popup-card__actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.ab-popup-card__actions .button {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+}
+
+.ab-popup-card__actions .dashicons {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  margin-top: 1px;
+}
+
+.ab-btn-delete {
+  color: #cc3333 !important;
+  border-color: #cc3333 !important;
+}
+
+.ab-btn-delete:hover {
+  background: #cc3333 !important;
+  color: #fff !important;
+}
+
+/* ==========================================================================
+   Edit Form
+   ========================================================================== */
+
+.ab-form-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.ab-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #6c63ff;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.ab-back-link:hover {
+  text-decoration: underline;
+}
+
+.ab-form-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #1a1a2e;
+}
+
+/* ---------- Two-column layout ---------- */
+.ab-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .ab-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Form Sections ---------- */
+.ab-form-section {
+  background: #fff;
+  border: 1px solid #e0e0ef;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.ab-form-section__title {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a2e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0fa;
+}
+
+.ab-form-section__title .dashicons {
+  color: #6c63ff;
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Form Table overrides ---------- */
+.ab-form-table th {
+  width: 180px;
+  padding-left: 0 !important;
+  vertical-align: top;
+  padding-top: 12px;
+}
+
+.ab-form-table td {
+  padding-left: 0 !important;
+}
+
+.ab-form-table .description {
+  color: #888;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.ab-select {
+  min-width: 220px;
+}
+
+/* ---------- Info Box ---------- */
+.ab-info-box {
+  background: #fff;
+  border: 1px solid #e0e0ef;
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.ab-info-box h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a2e;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0fa;
+}
+
+.ab-info-box h3 .dashicons {
+  color: #6c63ff;
+}
+
+.ab-info-box p {
+  font-size: 13px;
+  color: #555;
+  margin: 0 0 10px;
+}
+
+.ab-info-box code {
+  display: block;
+  background: #f4f4fb;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #4a4a8a;
+  border: 1px solid #e0e0ef;
+}
+
+.ab-info-box--tips ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ab-info-box--tips li {
+  font-size: 12px;
+  color: #555;
+  padding: 5px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.ab-info-box--tips li:last-child {
+  border-bottom: none;
+}
+
+/* ---------- Media field ---------- */
+.ab-media-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- Form Footer ---------- */
+.ab-form-footer {
+  padding: 20px 0;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.ab-form-footer .button {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 6px;
+}
+
+.ab-form-footer .dashicons {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Popup Form ---------- */
+.ab-popup-form .regular-text {
+  width: 100%;
+  max-width: 400px;
+}

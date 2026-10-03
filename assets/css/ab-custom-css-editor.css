@@ -1,0 +1,589 @@
+/**
+ * AB Custom CSS - Elementor Editor Styles
+ *
+ * Styles for Custom CSS control panel, responsive tabs,
+ * and the interactive Element Tree & Classes Scanner.
+ * Supports both standard light mode and Elementor dark mode.
+ *
+ * @package AB_Addon
+ * @version 1.2.1
+ */
+
+/* ==========================================================================
+   Section & Controls Layout
+   ========================================================================== */
+
+.elementor-control-section_ab_section_custom_css
+  .elementor-panel-heading-title {
+  font-weight: 600;
+}
+
+.elementor-control-ab_custom_css .elementor-control-content,
+.elementor-control-ab_custom_css_tablet .elementor-control-content,
+.elementor-control-ab_custom_css_mobile .elementor-control-content {
+  margin-top: 6px;
+}
+
+.elementor-control-ab_custom_css .CodeMirror,
+.elementor-control-ab_custom_css_tablet .CodeMirror,
+.elementor-control-ab_custom_css_mobile .CodeMirror {
+  border-radius: 4px;
+  border: 1px solid #d5dadf;
+  min-height: 170px;
+  font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.elementor-control-ab_custom_css .elementor-control-field-description,
+.elementor-control-ab_custom_css_tablet .elementor-control-field-description,
+.elementor-control-ab_custom_css_mobile .elementor-control-field-description {
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.4;
+  color: #6d7882;
+}
+
+.elementor-control-ab_custom_css .elementor-control-field-description code,
+.elementor-control-ab_custom_css_tablet
+  .elementor-control-field-description
+  code,
+.elementor-control-ab_custom_css_mobile
+  .elementor-control-field-description
+  code {
+  background: #eef2f5;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 11px;
+  color: #3b5998;
+  font-family: Consolas, Monaco, monospace;
+}
+
+/* ==========================================================================
+   Responsive Tabs (Desktop, Tablet, Mobile) - At the Top
+   ========================================================================== */
+
+.elementor-control-ab_custom_css_device_tabs {
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+
+.elementor-tab-control-ab_custom_css_desktop_tab a::before {
+  content: "\e925"; /* eicon-device-desktop */
+  font-family: eicons;
+  margin-right: 5px;
+  font-size: 12px;
+}
+
+.elementor-tab-control-ab_custom_css_tablet_tab a::before {
+  content: "\e927"; /* eicon-device-tablet */
+  font-family: eicons;
+  margin-right: 5px;
+  font-size: 12px;
+}
+
+.elementor-tab-control-ab_custom_css_mobile_tab a::before {
+  content: "\e926"; /* eicon-device-mobile */
+  font-family: eicons;
+  margin-right: 5px;
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   Element Classes & Element Tree Helper Box
+   ========================================================================== */
+
+.ab-custom-css-classes-box {
+  margin-top: 14px;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 5px;
+}
+
+.ab-classes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+/* View Switcher: Tree View vs All Badges */
+.ab-view-switcher {
+  display: inline-flex;
+  background: #e2e8f0;
+  border-radius: 4px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.ab-view-btn {
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+}
+
+.ab-view-btn:hover {
+  color: #1e293b;
+}
+
+.ab-view-btn.active {
+  background: #ffffff;
+  color: #0073aa;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.ab-classes-refresh-btn {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  border-radius: 3px;
+  font-size: 10.5px;
+  padding: 3px 8px;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.ab-classes-refresh-btn:hover {
+  background: #e2e8f0;
+  color: #0073aa;
+  border-color: #0073aa;
+}
+
+.ab-classes-hint {
+  font-size: 10.5px;
+  color: #718096;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.ab-classes-content {
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.ab-classes-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ab-classes-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   Element Tree Styles
+   ========================================================================== */
+
+.ab-tree-wrapper {
+  font-family: Consolas, Monaco, "Courier New", monospace;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.ab-tree-node {
+  margin: 1px 0;
+}
+
+.ab-tree-children {
+  padding-left: 12px;
+  margin-left: 6px;
+  border-left: 1px dashed #cbd5e1;
+}
+
+.ab-tree-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background 0.12s ease;
+  gap: 3px;
+}
+
+.ab-tree-row:hover {
+  background: #e2e8f0;
+}
+
+.ab-tree-toggle {
+  display: inline-block;
+  width: 14px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 11px;
+  color: #64748b;
+  user-select: none;
+}
+
+.ab-tree-toggle:hover {
+  color: #0073aa;
+}
+
+.ab-tree-bullet {
+  display: inline-block;
+  width: 14px;
+  text-align: center;
+  font-size: 9px;
+  color: #94a3b8;
+}
+
+/* Clickable pills inside tree row */
+.ab-clickable-pill {
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+  font-size: 10.5px;
+  padding: 1px 4px;
+  border-radius: 2px;
+  transition: all 0.15s ease;
+  line-height: 1.3;
+  display: inline-flex;
+  align-items: center;
+}
+
+.ab-clickable-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ab-tree-tag {
+  background: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+  border: 1px solid #e2e8f0;
+}
+
+.ab-tree-tag:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.ab-tree-id {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  font-weight: 600;
+}
+
+.ab-tree-id:hover {
+  background: #fde68a;
+  color: #78350f;
+}
+
+.ab-tree-class {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.ab-tree-class:hover {
+  background: #dbeafe;
+  color: #1e40af;
+  border-color: #93c5fd;
+}
+
+.ab-tree-close-bracket {
+  color: #94a3b8;
+  font-size: 10px;
+}
+
+.ab-tree-insert-btn {
+  margin-left: auto;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-size: 10px;
+  color: #475569;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  opacity: 0.85;
+  transition: all 0.15s ease;
+}
+
+.ab-tree-row:hover .ab-tree-insert-btn {
+  opacity: 1;
+  border-color: #0073aa;
+  color: #0073aa;
+}
+
+.ab-tree-insert-btn:hover {
+  background: #0073aa;
+  color: #ffffff !important;
+}
+
+.ab-pill-inserted {
+  background: #15803d !important;
+  border-color: #15803d !important;
+  color: #ffffff !important;
+}
+
+/* ==========================================================================
+   Badges / Pill View
+   ========================================================================== */
+
+.ab-badges-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.ab-class-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 3px;
+  padding: 3px 7px;
+  font-size: 11px;
+  font-family: Consolas, Monaco, "Courier New", monospace;
+  color: #1e293b;
+  cursor: pointer;
+  text-align: left;
+  line-height: 1.2;
+  transition: all 0.15s ease;
+}
+
+.ab-class-pill:hover {
+  background: #f0f9ff;
+  border-color: #38bdf8;
+  color: #0284c7;
+  transform: translateY(-1px);
+}
+
+.ab-class-pill.ab-pill-wrapper {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+.ab-class-pill.ab-pill-wrapper:hover {
+  background: #dbeafe;
+  border-color: #3b82f6;
+}
+
+.ab-class-pill.ab-pill-id {
+  background: #fef3c7;
+  border-color: #fde68a;
+  color: #92400e;
+  font-weight: 600;
+}
+
+.ab-class-pill.ab-pill-id:hover {
+  background: #fde68a;
+  border-color: #f59e0b;
+  color: #78350f;
+}
+
+.ab-class-pill.ab-pill-tag {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.ab-class-pill.ab-pill-tag:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.ab-class-pill .ab-pill-action {
+  font-size: 10px;
+  color: #94a3b8;
+  transition: color 0.15s ease;
+}
+
+.ab-class-pill:hover .ab-pill-action {
+  color: #0284c7;
+}
+
+.ab-classes-loading {
+  font-size: 11px;
+  color: #888;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ab-classes-empty {
+  font-size: 11px;
+  color: #718096;
+  padding: 4px 0;
+}
+
+/* ==========================================================================
+   Elementor Dark Mode Support
+   ========================================================================== */
+
+body.elementor-editor-dark-mode .elementor-control-ab_custom_css .CodeMirror,
+body.elementor-editor-dark-mode
+  .elementor-control-ab_custom_css_tablet
+  .CodeMirror,
+body.elementor-editor-dark-mode
+  .elementor-control-ab_custom_css_mobile
+  .CodeMirror,
+body.elementor-dark-mode .elementor-control-ab_custom_css .CodeMirror,
+body.elementor-dark-mode .elementor-control-ab_custom_css_tablet .CodeMirror,
+body.elementor-dark-mode .elementor-control-ab_custom_css_mobile .CodeMirror {
+  border-color: #404349;
+}
+
+body.elementor-editor-dark-mode
+  .elementor-control-ab_custom_css
+  .elementor-control-field-description,
+body.elementor-editor-dark-mode
+  .elementor-control-ab_custom_css_tablet
+  .elementor-control-field-description,
+body.elementor-editor-dark-mode
+  .elementor-control-ab_custom_css_mobile
+  .elementor-control-field-description,
+body.elementor-dark-mode
+  .elementor-control-ab_custom_css
+  .elementor-control-field-description,
+body.elementor-dark-mode
+  .elementor-control-ab_custom_css_tablet
+  .elementor-control-field-description,
+body.elementor-dark-mode
+  .elementor-control-ab_custom_css_mobile
+  .elementor-control-field-description {
+  color: #a4afb7;
+}
+
+body.elementor-editor-dark-mode .ab-custom-css-classes-box,
+body.elementor-dark-mode .ab-custom-css-classes-box {
+  background: #202326;
+  border-color: #34383c;
+}
+
+body.elementor-editor-dark-mode .ab-view-switcher,
+body.elementor-dark-mode .ab-view-switcher {
+  background: #181a1c;
+}
+
+body.elementor-editor-dark-mode .ab-view-btn,
+body.elementor-dark-mode .ab-view-btn {
+  color: #8b949e;
+}
+
+body.elementor-editor-dark-mode .ab-view-btn.active,
+body.elementor-dark-mode .ab-view-btn.active {
+  background: #26292c;
+  color: #71d7f7;
+}
+
+body.elementor-editor-dark-mode .ab-classes-refresh-btn,
+body.elementor-dark-mode .ab-classes-refresh-btn {
+  border-color: #404349;
+  color: #a4afb7;
+}
+
+body.elementor-editor-dark-mode .ab-classes-refresh-btn:hover,
+body.elementor-dark-mode .ab-classes-refresh-btn:hover {
+  background: #2a2e33;
+  border-color: #71d7f7;
+  color: #71d7f7;
+}
+
+body.elementor-editor-dark-mode .ab-tree-children,
+body.elementor-dark-mode .ab-tree-children {
+  border-left-color: #3e4247;
+}
+
+body.elementor-editor-dark-mode .ab-tree-row:hover,
+body.elementor-dark-mode .ab-tree-row:hover {
+  background: #2a2e33;
+}
+
+body.elementor-editor-dark-mode .ab-tree-tag,
+body.elementor-dark-mode .ab-tree-tag {
+  background: #1e293b;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+body.elementor-editor-dark-mode .ab-tree-class,
+body.elementor-dark-mode .ab-tree-class {
+  background: #1e293b;
+  border-color: #334155;
+  color: #93c5fd;
+}
+
+body.elementor-editor-dark-mode .ab-tree-id,
+body.elementor-dark-mode .ab-tree-id {
+  background: #451a03;
+  border-color: #78350f;
+  color: #fde68a;
+}
+
+body.elementor-editor-dark-mode .ab-tree-insert-btn,
+body.elementor-dark-mode .ab-tree-insert-btn {
+  background: #26292c;
+  border-color: #3e4247;
+  color: #cbd5e1;
+}
+
+body.elementor-editor-dark-mode .ab-tree-row:hover .ab-tree-insert-btn,
+body.elementor-dark-mode .ab-tree-row:hover .ab-tree-insert-btn {
+  border-color: #71d7f7;
+  color: #71d7f7;
+}
+
+body.elementor-editor-dark-mode .ab-class-pill,
+body.elementor-dark-mode .ab-class-pill {
+  background: #26292c;
+  border-color: #3e4247;
+  color: #cbd5e1;
+}
+
+body.elementor-editor-dark-mode .ab-class-pill:hover,
+body.elementor-dark-mode .ab-class-pill:hover {
+  background: #1e293b;
+  border-color: #38bdf8;
+  color: #71d7f7;
+}
+
+body.elementor-editor-dark-mode .ab-class-pill.ab-pill-wrapper,
+body.elementor-dark-mode .ab-class-pill.ab-pill-wrapper {
+  background: #172554;
+  border-color: #1e3a8a;
+  color: #93c5fd;
+}
+
+body.elementor-editor-dark-mode .ab-class-pill.ab-pill-id,
+body.elementor-dark-mode .ab-class-pill.ab-pill-id {
+  background: #451a03;
+  border-color: #78350f;
+  color: #fde68a;
+}
+
+body.elementor-editor-dark-mode .ab-class-pill.ab-pill-id:hover,
+body.elementor-dark-mode .ab-class-pill.ab-pill-id:hover {
+  background: #78350f;
+  border-color: #f59e0b;
+}
+
+body.elementor-editor-dark-mode .ab-class-pill.ab-pill-tag,
+body.elementor-dark-mode .ab-class-pill.ab-pill-tag {
+  background: #1e293b;
+  border-color: #334155;
+  color: #94a3b8;
+}

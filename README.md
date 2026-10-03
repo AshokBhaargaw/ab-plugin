@@ -1,4 +1,4 @@
-# AB Addon (AB Addon)
+# AB-WP Plugin (AB Addon)
 
 ![AB Addon Banner](https://raw.githubusercontent.com/AshokBhaargaw/ab-plugin/master/assets/banner.png)
 

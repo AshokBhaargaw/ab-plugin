@@ -1,7 +1,5 @@
 # AB-WP Plugin (AB Addon)
 
-![AB Addon Banner](https://raw.githubusercontent.com/AshokBhaargaw/ab-plugin/master/assets/banner.png)
-
 **AB Addon** is a powerful Elementor add‑on that brings a suite of UI enhancements to your WordPress site:
 
 - **Custom Elementor CSS** – a full‑screen editor with a live preview, searchable element tree, and one‑click insertion of IDs, classes or tags.
@@ -63,16 +61,6 @@
 ### Blog Grid & Basic Posts Widgets
 - Add the **AB Blog Grid** or **AB Basic Posts** widget from the **AB Addons** category in Elementor.
 - Configure query parameters, layout, pagination style, and optional custom CSS.
-
----
-
-## 📸 Screenshots
-
-| Screenshot | Description |
-|---|---|
-| ![Custom CSS Panel](https://raw.githubusercontent.com/AshokBhaargaw/ab-plugin/master/assets/screenshots/custom-css-panel.png) | The new Custom CSS panel with tree view and insertable badges. |
-| ![Popup Settings](https://raw.githubusercontent.com/AshokBhaargaw/ab-plugin/master/assets/screenshots/popup-settings.png) | Admin page for creating and managing popups. |
-| ![Blog Grid Widget](https://raw.githubusercontent.com/AshokBhaargaw/ab-plugin/master/assets/screenshots/blog-grid-widget.png) | Example of the Blog Grid widget in the Elementor editor. |
 
 ---
 

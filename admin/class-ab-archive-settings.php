@@ -206,9 +206,13 @@ class AB_Archive_Settings {
 							<?php else : ?>
 								<?php
 								foreach ( $supported_cpts as $slug => $cpt_object ) :
-									$archive_url = get_post_type_archive_link( $slug );
+									$archive_url = AB_Archive_Template_Manager::get_archive_url_for_post_type( $slug );
 									$selected_id = isset( $assigned_templates[ $slug ] ) ? absint( $assigned_templates[ $slug ] ) : 0;
-									$label       = ! empty( $cpt_object->labels->name ) ? $cpt_object->labels->name : ucfirst( $slug );
+									if ( 'post' === $slug ) {
+										$label = __( 'Blog (Posts)', 'ab-addon' );
+									} else {
+										$label = ! empty( $cpt_object->labels->name ) ? $cpt_object->labels->name : ucfirst( $slug );
+									}
 									$edit_url    = $selected_id ? admin_url( 'post.php?post=' . $selected_id . '&action=elementor' ) : '';
 									?>
 									<tr>

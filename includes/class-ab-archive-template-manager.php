@@ -86,9 +86,9 @@ class AB_Archive_Template_Manager {
 	}
 
 	/**
-	 * Retrieve list of all public custom post types that support archives.
+	 * Retrieve list of all public post types (standard Posts/Blog and all CPTs).
 	 *
-	 * Supports Hotel, Travel, Vehicle, Taxi, and any future CPTs dynamically.
+	 * Automatically discovers Hotel, Travel, Vehicle, Taxi, and any CPT created in the future.
 	 *
 	 * @return array Array of WP_Post_Type objects keyed by post type name.
 	 */
@@ -101,17 +101,49 @@ class AB_Archive_Template_Manager {
 		);
 
 		$supported = array();
-		$excluded  = array( 'post', 'page', 'attachment', 'elementor_library' );
+		$excluded  = array(
+			'page',
+			'attachment',
+			'elementor_library',
+			'elementor-hf',
+			'e-floating-buttons',
+			'elementor_font',
+			'elementor_icons',
+			'elementor_snippet',
+			'wp_block',
+			'wp_template',
+			'wp_template_part',
+			'wp_navigation',
+			'revision',
+			'nav_menu_item',
+			'custom_css',
+			'customize_changeset',
+			'oembed_cache',
+			'user_request',
+			'acf-field-group',
+			'acf-field',
+			'acf-post-type',
+			'acf-taxonomy',
+			'acf-ui-options-page',
+		);
 
+		// 1. Standard Blog Posts (placed first)
+		if ( isset( $post_types['post'] ) ) {
+			$supported['post'] = $post_types['post'];
+		}
+
+		// 2. All Custom Post Types
 		foreach ( $post_types as $slug => $cpt ) {
-			if ( in_array( $slug, $excluded, true ) ) {
+			if ( in_array( $slug, $excluded, true ) || 'post' === $slug ) {
 				continue;
 			}
 
-			// Include if post type has an archive enabled.
-			if ( ! empty( $cpt->has_archive ) ) {
-				$supported[ $slug ] = $cpt;
+			// Exclude plugin builder / internal helper post types
+			if ( strpos( $slug, 'elementor-' ) === 0 || strpos( $slug, 'e-' ) === 0 || strpos( $slug, 'acf-' ) === 0 ) {
+				continue;
 			}
+
+			$supported[ $slug ] = $cpt;
 		}
 
 		/**
@@ -123,35 +155,78 @@ class AB_Archive_Template_Manager {
 	}
 
 	/**
-	 * Detect current archive post type reliably.
+	 * Retrieve archive URL for a given post type.
 	 *
-	 * @return string|false Post type slug if on CPT archive, false otherwise.
+	 * @param string $slug Post type slug.
+	 * @return string Archive URL.
+	 */
+	public static function get_archive_url_for_post_type( $slug ) {
+		if ( 'post' === $slug ) {
+			$posts_page_id = get_option( 'page_for_posts' );
+			if ( $posts_page_id ) {
+				return get_permalink( $posts_page_id );
+			}
+			return home_url( '/' );
+		}
+
+		$archive_url = get_post_type_archive_link( $slug );
+		if ( ! empty( $archive_url ) ) {
+			return $archive_url;
+		}
+
+		$post_type_obj = get_post_type_object( $slug );
+		if ( $post_type_obj && ! empty( $post_type_obj->rewrite['slug'] ) ) {
+			return home_url( '/' . trim( $post_type_obj->rewrite['slug'], '/' ) . '/' );
+		}
+
+		return home_url( '/' . $slug . '/' );
+	}
+
+	/**
+	 * Detect current archive post type reliably (supports Blog Posts and CPT archives).
+	 *
+	 * @return string|false Post type slug if on an archive, false otherwise.
 	 */
 	public static function get_current_archive_post_type() {
 		if ( ! is_null( self::$current_archive_post_type ) ) {
 			return self::$current_archive_post_type;
 		}
 
-		if ( ! is_post_type_archive() ) {
-			self::$current_archive_post_type = false;
-			return false;
+		// 1. Check standard blog archive (Posts page)
+		if ( is_home() && ! is_front_page() ) {
+			self::$current_archive_post_type = 'post';
+			return 'post';
 		}
 
-		$post_type = get_query_var( 'post_type' );
-
-		if ( is_array( $post_type ) ) {
-			$post_type = reset( $post_type );
+		// Front page if set to show posts and has an assigned template
+		if ( is_home() && is_front_page() && self::get_template_id_for_post_type( 'post' ) ) {
+			self::$current_archive_post_type = 'post';
+			return 'post';
 		}
 
-		if ( empty( $post_type ) ) {
-			$queried_obj = get_queried_object();
-			if ( $queried_obj instanceof WP_Post_Type ) {
-				$post_type = $queried_obj->name;
+		// 2. Check Custom Post Type archives
+		if ( is_post_type_archive() ) {
+			$post_type = get_query_var( 'post_type' );
+
+			if ( is_array( $post_type ) ) {
+				$post_type = reset( $post_type );
+			}
+
+			if ( empty( $post_type ) ) {
+				$queried_obj = get_queried_object();
+				if ( $queried_obj instanceof WP_Post_Type ) {
+					$post_type = $queried_obj->name;
+				}
+			}
+
+			if ( ! empty( $post_type ) ) {
+				self::$current_archive_post_type = sanitize_key( $post_type );
+				return self::$current_archive_post_type;
 			}
 		}
 
-		self::$current_archive_post_type = ! empty( $post_type ) ? sanitize_key( $post_type ) : false;
-		return self::$current_archive_post_type;
+		self::$current_archive_post_type = false;
+		return false;
 	}
 
 	/**

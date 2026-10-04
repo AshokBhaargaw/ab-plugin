@@ -285,6 +285,11 @@ class AB_Settings_Page {
 						<div class="ab-popup-card__meta">
 							<span>🎯 <?php echo esc_html( $this->get_trigger_label( $popup['trigger_type'] ?? 'page_load' ) ); ?></span>
 							<span>📄 <?php echo esc_html( $this->get_content_label( $popup['content_type'] ?? 'text_only' ) ); ?></span>
+							<?php if ( ( $popup['trigger_type'] ?? 'page_load' ) === 'click' && ! empty( $popup['trigger_selector'] ) ) : ?>
+								<div style="margin-top: 8px;">
+									<code style="user-select: all; cursor: copy;" title="<?php esc_attr_e( 'Click to copy', 'ab-addon' ); ?>"><?php echo esc_html( $popup['trigger_selector'] ); ?></code>
+								</div>
+							<?php endif; ?>
 						</div>
 
 						<div class="ab-popup-card__actions">

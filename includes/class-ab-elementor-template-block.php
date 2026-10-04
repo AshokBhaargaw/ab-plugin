@@ -24,6 +24,10 @@ class AB_Elementor_Template_Block {
 		// Register block and assets.
 		add_action( 'init', array( $this, 'register_block' ) );
 
+		// Enqueue Elementor CSS for templates used on the current page BEFORE wp_head prints,
+		// so styles land in <head> (no flash of unstyled content).
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets_early' ), 20 );
+
 		// Register REST API endpoint for template discovery.
 		add_action( 'rest_api_init', array( $this, 'register_rest_routes' ) );
 	}
@@ -269,16 +273,19 @@ class AB_Elementor_Template_Block {
 			return '';
 		}
 
-		// Enqueue the specific Elementor template CSS file (contains all container, flex, grid, colors, fonts).
-		if ( class_exists( '\Elementor\Core\Files\CSS\Post' ) ) {
-			$css_file = new \Elementor\Core\Files\CSS\Post( $template_id );
-			$css_file->enqueue();
-		}
+		// Make sure Elementor's base frontend CSS + Kit (global colors/typography/button defaults) are loaded.
+		self::enqueue_elementor_base_assets();
 
-		// Render the Elementor template content using Elementor frontend API.
+		// Enqueue this template's CSS file the same way Elementor does (handles fonts,
+		// dynamic CSS, regeneration, and CSS of nested templates such as Loop Items).
+		self::enqueue_template_css( $template_id );
+		self::register_atomic_styles( $template_id ); // No-op if already done early.
+
+		// Render with Elementor's own pipeline. `true` = also output the per-post CSS.
+		// This also flags the page as "has Elementor", which makes Elementor print
+		// elementor-frontend JS + config (needed for carousels, tabs, animations...).
 		$template_content = '';
 		if ( class_exists( '\Elementor\Plugin' ) && isset( \Elementor\Plugin::$instance->frontend ) ) {
-			// Passing true ensures inline styles and dependencies are also loaded.
 			$template_content = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display( $template_id, true );
 		} else {
 			$template_content = do_shortcode( '[elementor-template id="' . $template_id . '"]' );
@@ -288,11 +295,140 @@ class AB_Elementor_Template_Block {
 			return '';
 		}
 
-		// Clean, minimal container wrapper with no hardcoded dimensions, padding, or display constraints.
+		// `the_content` runs wpautop() AFTER blocks render, which injects <p>/<br> into Elementor's
+		// markup and breaks layouts. Collapse newlines so wpautop has nothing to work on.
+		$template_content = self::protect_from_wpautop( $template_content );
+
 		return sprintf(
 			'<div class="ab-elementor-template-render" data-template-id="%d">%s</div>',
 			esc_attr( $template_id ),
 			$template_content
 		);
+	}
+
+	/**
+	 * Runs on wp_enqueue_scripts: find our block in the current post and enqueue CSS early.
+	 */
+	public function enqueue_assets_early() {
+		if ( ! is_singular() || ! self::is_elementor_active() ) {
+			return;
+		}
+
+		$post = get_post();
+		if ( ! $post || empty( $post->post_content ) ) {
+			return;
+		}
+
+		$template_ids = self::collect_template_ids( parse_blocks( $post->post_content ) );
+		
+		if ( ! empty( $template_ids ) ) {
+			self::enqueue_elementor_base_assets();
+			foreach ( $template_ids as $id ) {
+				self::enqueue_template_css( $id );
+				self::register_atomic_styles( $id );
+			}
+		}
+	}
+
+	/**
+	 * Elementor 4 "atomic" elements (e-div-block, e-flexbox, e-paragraph-base, e-button-base ...)
+	 * keep their styles OUTSIDE the normal post CSS, in generated files named
+	 * local-{POST_ID}-frontend-*.css. Elementor only registers those files when it fires
+	 * `elementor/post/render` for a document it knows is on the page. A Gutenberg post is not an
+	 * Elementor document, so we must announce the template ourselves.
+	 *
+	 * Known Elementor 4 limitation for templates rendered via shortcode / template widgets:
+	 * https://github.com/elementor/elementor/issues/35934
+	 *
+	 * @param int $template_id Elementor template ID.
+	 */
+	private static function register_atomic_styles( $template_id ) {
+		static $done = array();
+
+		$template_id = absint( $template_id );
+		if ( ! $template_id || isset( $done[ $template_id ] ) ) {
+			return;
+		}
+		$done[ $template_id ] = true;
+
+		/** This action is fired by Elementor when a document is rendered; atomic styles hook into it. */
+		do_action( 'elementor/post/render', $template_id );
+	}
+
+	/**
+	 * Recursively collect templateId values of our block from parsed blocks, including reusable blocks.
+	 */
+	private static function collect_template_ids( $blocks ) {
+		$ids = array();
+		foreach ( $blocks as $block ) {
+			// Check if it's our block
+			if ( 'ab-addon/elementor-template' === ( $block['blockName'] ?? '' ) && ! empty( $block['attrs']['templateId'] ) ) {
+				$ids[] = absint( $block['attrs']['templateId'] );
+			}
+			
+			// Check inside reusable blocks (wp_block)
+			if ( 'core/block' === ( $block['blockName'] ?? '' ) && ! empty( $block['attrs']['ref'] ) ) {
+				$reusable_block = get_post( $block['attrs']['ref'] );
+				if ( $reusable_block && 'wp_block' === $reusable_block->post_type ) {
+					$ids = array_merge( $ids, self::collect_template_ids( parse_blocks( $reusable_block->post_content ) ) );
+				}
+			}
+
+			// Check inner blocks recursively
+			if ( ! empty( $block['innerBlocks'] ) ) {
+				$ids = array_merge( $ids, self::collect_template_ids( $block['innerBlocks'] ) );
+			}
+		}
+		return array_unique( $ids );
+	}
+
+	/**
+	 * Elementor frontend.css + active Kit CSS (defines --e-global-* vars, button/typography defaults).
+	 */
+	private static function enqueue_elementor_base_assets() {
+		static $done = false;
+		if ( $done || ! class_exists( '\Elementor\Plugin' ) || ! isset( \Elementor\Plugin::$instance->frontend ) ) {
+			return;
+		}
+		$done = true;
+
+		\Elementor\Plugin::$instance->frontend->enqueue_styles(); // fires elementor/frontend/before_enqueue_styles -> Kit CSS.
+
+		// Explicitly enqueue the active Kit CSS as a safety net.
+		if ( isset( \Elementor\Plugin::$instance->kits_manager ) ) {
+			$kit_id = \Elementor\Plugin::$instance->kits_manager->get_active_id();
+			if ( $kit_id ) {
+				self::enqueue_template_css( $kit_id );
+			}
+		}
+	}
+
+	/**
+	 * Enqueue an Elementor post's generated CSS file (Elementor's native way).
+	 */
+	private static function enqueue_template_css( $post_id ) {
+		if ( ! class_exists( '\Elementor\Core\Files\CSS\Post' ) ) {
+			return;
+		}
+		$css = \Elementor\Core\Files\CSS\Post::create( $post_id );
+		$css->enqueue();
+	}
+
+	/**
+	 * Remove newlines from HTML (but not from <script>/<style>/<pre>/<textarea>) so wpautop can't mangle it.
+	 */
+	private static function protect_from_wpautop( $html ) {
+		$parts = preg_split( '#(<(script|style|pre|textarea)\b.*?</\2>)#is', $html, -1, PREG_SPLIT_DELIM_CAPTURE );
+		if ( ! is_array( $parts ) ) {
+			return $html;
+		}
+		$out = '';
+		for ( $i = 0, $n = count( $parts ); $i < $n; $i += 3 ) {
+			$out .= preg_replace( '/\s*[\r\n]+\s*/', ' ', $parts[ $i ] );   // normal HTML.
+			if ( isset( $parts[ $i + 1 ] ) ) {
+				$out .= $parts[ $i + 1 ];                                    // protected block, untouched.
+			}
+		}
+		return $out;
 	}
 }

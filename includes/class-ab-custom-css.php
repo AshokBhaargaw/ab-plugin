@@ -132,7 +132,7 @@ final class AB_Custom_CSS {
 				'description' => sprintf(
 					/* translators: %s: selector tag */
 					esc_html__( 'Applies to all screen sizes. Use %s to target this element.', 'ab-addon' ),
-					'<code>selector</code>'
+					'<code class="ab-clickable-pill" data-selector="selector" style="cursor:pointer;" title="Click to insert selector">selector</code>'
 				),
 			)
 		);

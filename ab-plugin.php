@@ -47,6 +47,10 @@ final class AB_Addon_Elementor {
 		// Standalone shortcode renderer.
 		require_once AB_ADDON_PATH . 'includes/class-ab-popup-shortcode.php';
 		new AB_Popup_Shortcode();
+
+		// Gutenberg: Elementor Template block.
+		require_once AB_ADDON_PATH . 'includes/class-ab-elementor-template-block.php';
+		new AB_Elementor_Template_Block();
 	}
 
 	public function init() {

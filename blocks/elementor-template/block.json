@@ -1,0 +1,32 @@
+
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ab-addon/elementor-template",
+  "version": "1.0.0",
+  "title": "AB Elementor Template",
+  "category": "ab-addon",
+  "icon": "layout",
+  "description": "Insert a saved Elementor template into Gutenberg content.",
+  "keywords": [
+    "elementor",
+    "template",
+    "ab addon",
+    "container",
+    "section",
+    "flexbox"
+  ],
+  "attributes": {
+    "templateId": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "supports": {
+    "html": false,
+    "customClassName": true,
+    "align": ["wide", "full"]
+  },
+  "editorScript": "ab-elementor-template-block-editor",
+  "editorStyle": "ab-elementor-template-block-editor-style"
+}

@@ -37,6 +37,15 @@ class AB_Settings_Page {
 			'dashicons-lightbulb',
 			58
 		);
+
+		add_submenu_page(
+			'ab-settings',
+			__( 'Popups', 'ab-addon' ),
+			__( 'Popups', 'ab-addon' ),
+			'manage_options',
+			'ab-settings',
+			array( $this, 'render_page' )
+		);
 	}
 
 	// =========================================================================
@@ -221,13 +230,16 @@ class AB_Settings_Page {
 
 		?>
 		<div class="wrap ab-settings-wrap" style="padding-top: 20px;">
-			<!-- <div class="ab-settings-header">
-				<div class="ab-settings-header__logo">
-					<span class="dashicons dashicons-lightbulb"></span>
-					<h1><?php esc_html_e( 'AB Settings', 'ab-addon' ); ?></h1>
-				</div>
-				<p class="ab-settings-header__desc"><?php esc_html_e( 'Manage your site popups. Use the shortcode below each popup to display it anywhere on your site.', 'ab-addon' ); ?></p>
-			</div> -->
+
+			<!-- Navigation Tabs -->
+			<nav class="nav-tab-wrapper ab-admin-nav-tabs" style="margin-bottom: 20px;">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=ab-settings' ) ); ?>" class="nav-tab nav-tab-active">
+					<span class="dashicons dashicons-megaphone"></span> <?php esc_html_e( 'Popups', 'ab-addon' ); ?>
+				</a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=ab-archive-templates' ) ); ?>" class="nav-tab">
+					<span class="dashicons dashicons-layout"></span> <?php esc_html_e( 'Archive Templates', 'ab-addon' ); ?>
+				</a>
+			</nav>
 
 			<?php if ( isset( $_GET['saved'] ) ) : ?>
 				<div class="notice notice-success is-dismissible"><p><?php esc_html_e( '✅ Popup saved successfully!', 'ab-addon' ); ?></p></div>

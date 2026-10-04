@@ -1,0 +1,246 @@
+/* ==========================================================================
+   AB Hotel Grid Widget Base Styles
+   ========================================================================== */
+
+.ab-hotel-grid-wrapper {
+  width: 100%;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.ab-hotel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  box-sizing: border-box;
+}
+
+/* Card Container */
+.ab-hotel-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #ffffff;
+  border: 1px solid #e9edf2;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(31, 41, 55, 0.06);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+  box-sizing: border-box;
+}
+
+.ab-hotel-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(31, 41, 55, 0.12);
+}
+
+/* Media / Image */
+.ab-hotel-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 230px;
+  overflow: hidden;
+  background-color: #f3f4f6;
+}
+
+.ab-hotel-image-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.ab-hotel-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.ab-hotel-card:hover .ab-hotel-img {
+  transform: scale(1.04);
+}
+
+.ab-hotel-placeholder {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  color: #9ca3af;
+}
+
+.ab-hotel-placeholder .dashicons {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+}
+
+/* Badge */
+.ab-hotel-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background-color: #d97706;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  line-height: 1.2;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Content Area */
+.ab-hotel-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 22px;
+  box-sizing: border-box;
+}
+
+/* Location */
+.ab-hotel-location {
+  margin: 0 0 8px;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Title */
+.ab-hotel-title {
+  margin: 0 0 12px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1.3;
+  color: #1f2937;
+}
+
+.ab-hotel-title a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.ab-hotel-title a:hover {
+  color: #d97706;
+}
+
+/* Excerpt */
+.ab-hotel-excerpt {
+  flex: 1;
+  margin: 0 0 20px;
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.ab-hotel-excerpt p {
+  margin: 0;
+}
+
+/* Footer / Button */
+.ab-hotel-footer {
+  margin-top: auto;
+}
+
+.ab-hotel-btn {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background-color: #1f2937;
+  color: #ffffff !important;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-decoration: none !important;
+  box-sizing: border-box;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.ab-hotel-btn:hover {
+  background-color: #d97706;
+  color: #ffffff !important;
+}
+
+.ab-hotel-btn-arrow {
+  transition: transform 0.2s ease;
+}
+
+.ab-hotel-btn:hover .ab-hotel-btn-arrow {
+  transform: translateX(4px);
+}
+
+/* Pagination */
+.ab-hotel-pagination {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.ab-hotel-pagination .nav-links,
+.ab-hotel-pagination .ab-hotel-pagination-inner {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.ab-hotel-pagination .page-numbers {
+  display: inline-flex;
+  min-width: 42px;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #374151;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.ab-hotel-pagination .page-numbers:hover,
+.ab-hotel-pagination .page-numbers.current {
+  background: #d97706;
+  border-color: #d97706;
+  color: #ffffff;
+}
+
+/* Responsive Fallbacks */
+@media (max-width: 1024px) {
+  .ab-hotel-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .ab-hotel-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .ab-hotel-image-wrapper {
+    height: 200px;
+  }
+}

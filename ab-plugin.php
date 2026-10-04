@@ -51,6 +51,17 @@ final class AB_Addon_Elementor {
 		// Gutenberg: Elementor Template block.
 		require_once AB_ADDON_PATH . 'includes/class-ab-elementor-template-block.php';
 		new AB_Elementor_Template_Block();
+
+		// Hotel Helper.
+		require_once AB_ADDON_PATH . 'includes/class-ab-hotel-helper.php';
+
+		// Archive Template Manager.
+		require_once AB_ADDON_PATH . 'includes/class-ab-archive-template-manager.php';
+		new AB_Archive_Template_Manager();
+
+		// Archive Templates Admin Settings.
+		require_once AB_ADDON_PATH . 'admin/class-ab-archive-settings.php';
+		new AB_Archive_Settings();
 	}
 
 	public function init() {
@@ -101,17 +112,26 @@ final class AB_Addon_Elementor {
 	public function register_widgets( $widgets_manager ) {
 		require_once AB_ADDON_PATH . 'widgets/class-ab-blog-grid-widget.php';
 		require_once AB_ADDON_PATH . 'widgets/class-ab-basic-posts-widget.php';
+		require_once AB_ADDON_PATH . 'widgets/class-ab-hotel-grid-widget.php';
 		// Note: Popup is now managed via AB Settings admin page and [ab_popup] shortcode.
 		// The Elementor popup widget (class-ab-popup-widget.php) is intentionally not loaded here.
 
 		$widgets_manager->register( new \AB_Blog_Grid_Widget() );
 		$widgets_manager->register( new \AB_Basic_Posts_Widget() );
+		$widgets_manager->register( new \AB_Hotel_Grid_Widget() );
 	}
 
 	public function enqueue_frontend_assets() {
 		wp_enqueue_style(
 			'ab-blog-grid-style',
 			AB_ADDON_URL . 'assets/css/blog-grid.css',
+			array(),
+			AB_ADDON_VERSION
+		);
+
+		wp_register_style(
+			'ab-hotel-grid-style',
+			AB_ADDON_URL . 'assets/css/hotel-grid.css',
 			array(),
 			AB_ADDON_VERSION
 		);

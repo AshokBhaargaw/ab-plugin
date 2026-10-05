@@ -62,6 +62,10 @@ final class AB_Addon_Elementor {
 		// Archive Templates Admin Settings.
 		require_once AB_ADDON_PATH . 'admin/class-ab-archive-settings.php';
 		new AB_Archive_Settings();
+
+		// ACF Repeater (provides Repeater field for free).
+		require_once AB_ADDON_PATH . 'includes/class-ab-acf-repeater.php';
+		new AB_ACF_Repeater();
 	}
 
 	public function init() {

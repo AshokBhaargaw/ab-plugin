@@ -1,0 +1,248 @@
+/**
+ * AB ACF Repeater Styles
+ */
+
+/* ==========================================================================
+   Repeater Table Layout
+   ========================================================================== */
+
+.ab-acf-repeater {
+  margin: 0 0 15px 0;
+  position: relative;
+}
+
+.ab-acf-repeater .acf-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #ccd0d4;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.ab-acf-repeater .acf-table thead th {
+  background: #f6f7f7;
+  border-bottom: 1px solid #ccd0d4;
+  padding: 10px 12px;
+  font-weight: 600;
+  font-size: 13px;
+  color: #1d2327;
+  text-align: left;
+}
+
+.ab-acf-repeater .acf-table tbody tr.acf-row {
+  transition: background-color 0.15s ease;
+}
+
+.ab-acf-repeater .acf-table tbody tr.acf-row:hover {
+  background-color: #f9fbfd;
+}
+
+.ab-acf-repeater .acf-table tbody tr.acf-row:not(:last-child) td {
+  border-bottom: 1px solid #e2e4e7;
+}
+
+.ab-acf-repeater .acf-table td {
+  padding: 10px 12px;
+  vertical-align: top;
+}
+
+/* Hide clone row */
+.ab-acf-repeater .acf-row.acf-clone {
+  display: none !important;
+}
+
+/* Order handle */
+.ab-acf-repeater .acf-row-handle.order {
+  width: 36px;
+  text-align: center;
+  vertical-align: middle !important;
+  cursor: grab;
+  background-color: #fbfbfb;
+  border-right: 1px solid #e2e4e7;
+  user-select: none;
+}
+
+.ab-acf-repeater .acf-row-handle.order:hover {
+  background-color: #f0f0f1;
+}
+
+.ab-acf-repeater .acf-row-handle.order:active {
+  cursor: grabbing;
+}
+
+.ab-acf-repeater .acf-row-handle.order span {
+  display: inline-block;
+  min-width: 20px;
+  height: 20px;
+  line-height: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #646970;
+  background: #fff;
+  border: 1px solid #dcdcde;
+  border-radius: 10px;
+  text-align: center;
+  padding: 0 4px;
+}
+
+/* Actions cell */
+.ab-acf-repeater .acf-row-handle.remove {
+  width: 54px;
+  text-align: center;
+  vertical-align: middle !important;
+  border-left: 1px solid #e2e4e7;
+  white-space: nowrap;
+}
+
+.ab-acf-repeater .acf-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 1;
+  transition: all 0.15s ease;
+  margin: 0 2px;
+  border: 1px solid transparent;
+}
+
+.ab-acf-repeater .acf-icon.-plus {
+  background: #f0f6fc;
+  color: #2271b1;
+  border-color: #c5d9ed;
+}
+
+.ab-acf-repeater .acf-icon.-plus:hover {
+  background: #2271b1;
+  color: #fff;
+  border-color: #2271b1;
+}
+
+.ab-acf-repeater .acf-icon.-plus::before {
+  content: "+";
+  font-size: 15px;
+}
+
+.ab-acf-repeater .acf-icon.-minus {
+  background: #fcf0f0;
+  color: #d63638;
+  border-color: #f0c5c5;
+}
+
+.ab-acf-repeater .acf-icon.-minus:hover {
+  background: #d63638;
+  color: #fff;
+  border-color: #d63638;
+}
+
+.ab-acf-repeater .acf-icon.-minus::before {
+  content: "−";
+  font-size: 15px;
+}
+
+.ab-acf-repeater .acf-icon.disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+/* Actions toolbar */
+.ab-acf-repeater .acf-actions {
+  padding: 10px 0;
+  text-align: right;
+}
+
+.ab-acf-repeater .acf-repeater-add-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 4px;
+}
+
+.ab-acf-repeater .acf-repeater-add-row.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Block and Row Layouts
+   ========================================================================== */
+
+.ab-acf-repeater.-block .acf-row.-block,
+.ab-acf-repeater.-row .acf-row.-row-layout {
+  background: #fff;
+  border: 1px solid #ccd0d4;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.ab-acf-repeater .acf-row-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f6f7f7;
+  border-bottom: 1px solid #ccd0d4;
+  font-weight: 600;
+  font-size: 13px;
+  border-radius: 4px 4px 0 0;
+}
+
+.ab-acf-repeater .acf-row-header .acf-row-handle.order {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  margin-right: 8px;
+  cursor: grab;
+  color: #646970;
+}
+
+.ab-acf-repeater .acf-row-header .acf-row-number {
+  flex: 1;
+  color: #1d2327;
+}
+
+.ab-acf-repeater .acf-row-header .acf-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ab-acf-repeater .acf-fields {
+  padding: 12px;
+}
+
+/* Helper sortable placeholder */
+.ab-acf-repeater .ui-sortable-placeholder {
+  visibility: visible !important;
+  background: #f0f6fc !important;
+  border: 1px dashed #2271b1 !important;
+  min-height: 44px;
+}
+
+/* ==========================================================================
+   ACF Field Group Modal Unlocking
+   ========================================================================== */
+
+.acf-field-picker [data-type="repeater"] .acf-pro-label,
+.acf-field-types-tab [data-type="repeater"] .acf-pro-label,
+.acf-field-type-search-results [data-type="repeater"] .acf-pro-label,
+.acf-field-type-item[data-type="repeater"] .acf-pro-label {
+  display: none !important;
+}
+
+.acf-field-picker [data-type="repeater"] .acf-icon-lock,
+.acf-field-types-tab [data-type="repeater"] .acf-icon-lock,
+.acf-field-type-item[data-type="repeater"] .acf-icon-lock {
+  display: none !important;
+}

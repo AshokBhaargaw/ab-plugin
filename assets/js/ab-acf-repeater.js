@@ -175,13 +175,15 @@
 	// Initialize on ACF ready and append actions.
 	if (typeof acf !== 'undefined') {
 		acf.addAction('ready', function($el) {
-			$el.find('.ab-acf-repeater, .acf-repeater').each(function() {
+			var $context = ($el && $el.length) ? ($el instanceof jQuery ? $el : $($el)) : $(document);
+			$context.find('.ab-acf-repeater, .acf-repeater').each(function() {
 				initRepeater($(this));
 			});
 		});
 
 		acf.addAction('append', function($el) {
-			$el.find('.ab-acf-repeater, .acf-repeater').each(function() {
+			var $context = ($el && $el.length) ? ($el instanceof jQuery ? $el : $($el)) : $(document);
+			$context.find('.ab-acf-repeater, .acf-repeater').each(function() {
 				initRepeater($(this));
 			});
 		});

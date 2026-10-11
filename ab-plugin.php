@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-define( 'AB_ADDON_VERSION', '1.2.2' );
+define( 'AB_ADDON_VERSION', '1.2.3' );
 define( 'AB_ADDON_PATH', plugin_dir_path( __FILE__ ) );
 define( 'AB_ADDON_URL', plugin_dir_url( __FILE__ ) );
 

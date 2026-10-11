@@ -3,7 +3,7 @@
  * Plugin Name: AB Addon
  * Plugin URI:  https://ramdevraa.in
  * Description: Custom Elementor Addon with Blog Grid, Basic Posts widgets, Custom CSS for all elements, and a powerful Popup manager (AB Settings).
- * Version:     1.2.4
+ * Version:     1.2.5
  * Author:      Ashok Bhaargaw
  * Text Domain: ab-addon
  */
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-define( 'AB_ADDON_VERSION', '1.2.4' );
+define( 'AB_ADDON_VERSION', '1.2.5' );
 define( 'AB_ADDON_PATH', plugin_dir_path( __FILE__ ) );
 define( 'AB_ADDON_URL', plugin_dir_url( __FILE__ ) );
 

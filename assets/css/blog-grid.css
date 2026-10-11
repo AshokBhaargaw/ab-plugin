@@ -10,15 +10,49 @@
 /* Category Filter Bar */
 .ab-filter-bar {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-start;
   gap: 10px;
   margin-bottom: 30px;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  padding-bottom: 8px;
+  padding-top: 4px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+/* Custom subtle scrollbar styling for .ab-filter-bar */
+.ab-filter-bar::-webkit-scrollbar {
+  height: 4px;
+}
+
+.ab-filter-bar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ab-filter-bar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+.ab-filter-bar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
 
 .ab-filter-btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  white-space: nowrap;
   padding: 8px 18px;
   font-size: 14px;
   font-weight: 600;
@@ -30,6 +64,7 @@
   transition: all 0.3s ease;
   outline: none;
   text-transform: capitalize;
+  user-select: none;
 }
 
 .ab-filter-btn:hover,
@@ -37,6 +72,12 @@
   color: #ffffff;
   background-color: #ff4500;
   box-shadow: 0 4px 12px rgba(255, 69, 0, 0.25);
+}
+
+@media (max-width: 768px) {
+  .ab-filter-bar {
+    justify-content: flex-start !important;
+  }
 }
 
 /* Grid Layout */

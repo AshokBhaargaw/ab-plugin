@@ -273,22 +273,33 @@ class AB_Elementor_Template_Block {
 			return '';
 		}
 
+		$is_rest = self::is_rest_request();
+
 		// Make sure Elementor's base frontend CSS + Kit (global colors/typography/button defaults) are loaded.
-		self::enqueue_elementor_base_assets();
+		if ( ! $is_rest ) {
+			self::enqueue_elementor_base_assets();
+			// Enqueue this template's CSS file the same way Elementor does (handles fonts,
+			// dynamic CSS, regeneration, and CSS of nested templates such as Loop Items).
+			self::enqueue_template_css( $template_id );
+			self::register_atomic_styles( $template_id ); // No-op if already done early.
+		}
 
-		// Enqueue this template's CSS file the same way Elementor does (handles fonts,
-		// dynamic CSS, regeneration, and CSS of nested templates such as Loop Items).
-		self::enqueue_template_css( $template_id );
-		self::register_atomic_styles( $template_id ); // No-op if already done early.
-
-		// Render with Elementor's own pipeline. `true` = also output the per-post CSS.
-		// This also flags the page as "has Elementor", which makes Elementor print
-		// elementor-frontend JS + config (needed for carousels, tabs, animations...).
+		// Render with Elementor's own pipeline.
+		// In REST context (e.g. Gutenberg post save), $with_css must be false to prevent print_css()
+		// from echoing <style> tags to stdout and breaking the JSON response.
+		// Always capture output buffer to prevent any stray output from corrupting REST responses.
 		$template_content = '';
+		ob_start();
 		if ( class_exists( '\Elementor\Plugin' ) && isset( \Elementor\Plugin::$instance->frontend ) ) {
-			$template_content = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display( $template_id, true );
+			$template_content = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display( $template_id, ! $is_rest );
 		} else {
 			$template_content = do_shortcode( '[elementor-template id="' . $template_id . '"]' );
+		}
+		$stray_output = ob_get_clean();
+
+		// On non-REST requests, merge any captured styles/markup with the template content.
+		if ( ! $is_rest && ! empty( $stray_output ) ) {
+			$template_content = $stray_output . $template_content;
 		}
 
 		if ( empty( $template_content ) ) {
@@ -430,5 +441,26 @@ class AB_Elementor_Template_Block {
 			}
 		}
 		return $out;
+	}
+
+	/**
+	 * Check if the current request is a REST API / JSON request.
+	 *
+	 * @return bool
+	 */
+	public static function is_rest_request() {
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			return true;
+		}
+		if ( function_exists( 'wp_is_json_request' ) && wp_is_json_request() ) {
+			return true;
+		}
+		if ( function_exists( 'wp_is_serving_rest_request' ) && wp_is_serving_rest_request() ) {
+			return true;
+		}
+		if ( ! empty( $_SERVER['REQUEST_URI'] ) && false !== strpos( $_SERVER['REQUEST_URI'], '/wp-json/' ) ) {
+			return true;
+		}
+		return false;
 	}
 }

@@ -400,6 +400,15 @@ final class AB_Custom_CSS {
 			return;
 		}
 
+		// Skip in REST and JSON API requests (prevents breaking Gutenberg saving and REST endpoints).
+		if ( ( defined( 'REST_REQUEST' ) && REST_REQUEST )
+			|| ( function_exists( 'wp_is_json_request' ) && wp_is_json_request() )
+			|| ( function_exists( 'wp_is_serving_rest_request' ) && wp_is_serving_rest_request() )
+			|| ( ! empty( $_SERVER['REQUEST_URI'] ) && false !== strpos( $_SERVER['REQUEST_URI'], '/wp-json/' ) )
+		) {
+			return;
+		}
+
 		$element_id = $element->get_id();
 
 		// If already compiled into the main stylesheet by add_element_custom_css, do nothing.

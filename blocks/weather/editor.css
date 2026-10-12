@@ -1,0 +1,41 @@
+/**
+ * AB Weather Block Editor Styles
+ */
+
+.ab-weather-block-wrapper {
+  width: 100%;
+  margin: 1rem 0;
+}
+
+.ab-weather-editor-preview {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.ab-weather-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+}
+
+.ab-weather-preview-badge {
+  margin-left: auto;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+}
+
+.ab-weather-preview-desc {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.9rem;
+}

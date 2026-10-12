@@ -66,6 +66,22 @@ final class AB_Addon_Elementor {
 		// ACF Repeater (provides Repeater field for free).
 		require_once AB_ADDON_PATH . 'includes/class-ab-acf-repeater.php';
 		new AB_ACF_Repeater();
+
+		// AB Weather — Ramdevra Weather Service & Renderer.
+		require_once AB_ADDON_PATH . 'includes/weather/class-ab-weather-service.php';
+		require_once AB_ADDON_PATH . 'includes/weather/class-ab-weather-renderer.php';
+
+		// Weather Shortcode.
+		require_once AB_ADDON_PATH . 'includes/class-ab-weather-shortcode.php';
+		new AB_Weather_Shortcode();
+
+		// Weather Gutenberg Block.
+		require_once AB_ADDON_PATH . 'includes/class-ab-weather-block.php';
+		new AB_Weather_Block();
+
+		// Weather Admin Settings.
+		require_once AB_ADDON_PATH . 'admin/class-ab-weather-settings.php';
+		new AB_Weather_Settings();
 	}
 
 	public function init() {
@@ -117,15 +133,23 @@ final class AB_Addon_Elementor {
 		require_once AB_ADDON_PATH . 'widgets/class-ab-blog-grid-widget.php';
 		require_once AB_ADDON_PATH . 'widgets/class-ab-basic-posts-widget.php';
 		require_once AB_ADDON_PATH . 'widgets/class-ab-hotel-grid-widget.php';
+		require_once AB_ADDON_PATH . 'widgets/class-ab-weather-widget.php';
 		// Note: Popup is now managed via AB Settings admin page and [ab_popup] shortcode.
 		// The Elementor popup widget (class-ab-popup-widget.php) is intentionally not loaded here.
 
 		$widgets_manager->register( new \AB_Blog_Grid_Widget() );
 		$widgets_manager->register( new \AB_Basic_Posts_Widget() );
 		$widgets_manager->register( new \AB_Hotel_Grid_Widget() );
+		$widgets_manager->register( new \AB_Weather_Widget() );
 	}
 
 	public function enqueue_frontend_assets() {
+		if ( wp_style_is( 'e-swiper', 'registered' ) ) {
+			wp_enqueue_style( 'e-swiper' );
+		} elseif ( wp_style_is( 'swiper', 'registered' ) ) {
+			wp_enqueue_style( 'swiper' );
+		}
+
 		wp_enqueue_style(
 			'ab-blog-grid-style',
 			AB_ADDON_URL . 'assets/css/blog-grid.css',
@@ -140,12 +164,25 @@ final class AB_Addon_Elementor {
 			AB_ADDON_VERSION
 		);
 
+		wp_register_style(
+			'ab-weather-style',
+			AB_ADDON_URL . 'assets/css/weather.css',
+			array(),
+			AB_ADDON_VERSION
+		);
+
 		// Note: popup CSS/JS are now registered and conditionally enqueued by AB_Popup_Shortcode.
+
+		$script_deps = array( 'jquery' );
+		if ( wp_script_is( 'swiper', 'registered' ) ) {
+			wp_enqueue_script( 'swiper' );
+			$script_deps[] = 'swiper';
+		}
 
 		wp_enqueue_script(
 			'ab-blog-grid-script',
 			AB_ADDON_URL . 'assets/js/blog-grid.js',
-			array( 'jquery' ),
+			$script_deps,
 			AB_ADDON_VERSION,
 			true
 		);
@@ -216,12 +253,19 @@ final class AB_Addon_Elementor {
 		ob_start();
 
 		if ( $query->have_posts() ) {
+			$is_slider = ( isset( $clean_settings['layout_type'] ) && 'slider' === $clean_settings['layout_type'] );
 			while ( $query->have_posts() ) {
 				$query->the_post();
-				if ( class_exists( '\AB_Basic_Posts_Widget' ) ) {
-					\AB_Basic_Posts_Widget::render_single_card( $clean_settings );
-				} else {
+				if ( $is_slider ) {
+					echo '<div class="swiper-slide">';
+				}
+				if ( class_exists( '\AB_Blog_Grid_Widget' ) ) {
 					\AB_Blog_Grid_Widget::render_single_card( $clean_settings );
+				} elseif ( class_exists( '\AB_Basic_Posts_Widget' ) ) {
+					\AB_Basic_Posts_Widget::render_single_card( $clean_settings );
+				}
+				if ( $is_slider ) {
+					echo '</div>';
 				}
 			}
 			wp_reset_postdata();

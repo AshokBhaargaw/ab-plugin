@@ -22,29 +22,20 @@
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
   overscroll-behavior-x: contain;
-  padding-bottom: 8px;
+  padding-bottom: 6px;
   padding-top: 4px;
   box-sizing: border-box;
-  scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 transparent;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
-/* Custom subtle scrollbar styling for .ab-filter-bar */
+/* Hide scrollbar completely across Chrome, Safari, Edge, Opera */
 .ab-filter-bar::-webkit-scrollbar {
-  height: 4px;
-}
-
-.ab-filter-bar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.ab-filter-bar::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 10px;
-}
-
-.ab-filter-bar::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  -webkit-appearance: none !important;
 }
 
 .ab-filter-btn {
@@ -537,5 +528,168 @@
   }
   .ab-basic-posts-list .ab-card-media {
     width: 100%;
+  }
+}
+
+/* =========================================================
+   AB Blog Slider / Carousel
+   ========================================================= */
+.ab-blog-slider-wrap {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.ab-blog-slider {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+  padding: 10px 0 38px 0;
+  box-sizing: border-box;
+}
+
+.ab-blog-slider.no-dots {
+  padding-bottom: 10px;
+}
+
+.ab-blog-slider .swiper-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: flex;
+  align-items: stretch;
+  transition-property: transform;
+  box-sizing: border-box;
+}
+
+.ab-blog-slider .swiper-slide {
+  height: auto;
+  display: flex;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  position: relative;
+  transition-property: transform;
+}
+
+.ab-blog-slider .swiper-slide .ab-card-item {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ab-blog-slider .swiper-slide .ab-card-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation Arrows */
+.ab-slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  color: #1e293b;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.25s ease;
+  user-select: none;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.ab-blog-slider-wrap.has-dots .ab-slider-arrow {
+  top: calc(50% - 14px);
+}
+
+.ab-slider-arrow:hover {
+  background-color: #ff4500;
+  color: #ffffff;
+  box-shadow: 0 6px 18px rgba(255, 69, 0, 0.35);
+  transform: translateY(-50%) scale(1.06);
+}
+
+.ab-blog-slider-wrap.has-dots .ab-slider-arrow:hover {
+  transform: translateY(-50%) scale(1.06);
+}
+
+.ab-slider-arrow.swiper-button-disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.ab-slider-arrow.ab-slider-prev {
+  left: 8px;
+}
+
+.ab-slider-arrow.ab-slider-next {
+  right: 8px;
+}
+
+.ab-slider-arrow svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* Pagination Dots */
+.ab-slider-pagination {
+  position: absolute;
+  bottom: 8px !important;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.ab-slider-pagination .swiper-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  margin: 0 !important;
+  border-radius: 50%;
+  background-color: #cbd5e1;
+  opacity: 0.75;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.ab-slider-pagination .swiper-pagination-bullet-active {
+  background-color: #ff4500;
+  opacity: 1;
+  width: 22px;
+  border-radius: 6px;
+}
+
+@media (max-width: 768px) {
+  .ab-slider-arrow {
+    width: 32px;
+    height: 32px;
+  }
+  .ab-slider-arrow svg {
+    width: 15px;
+    height: 15px;
+  }
+  .ab-slider-arrow.ab-slider-prev {
+    left: 4px;
+  }
+  .ab-slider-arrow.ab-slider-next {
+    right: 4px;
   }
 }

@@ -38,11 +38,11 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 	}
 
 	public function get_style_depends() {
-		return array( 'ab-blog-grid-style' );
+		return array( 'swiper', 'e-swiper', 'ab-blog-grid-style' );
 	}
 
 	public function get_script_depends() {
-		return array( 'ab-blog-grid-script' );
+		return array( 'swiper', 'ab-blog-grid-script' );
 	}
 
 	protected function get_categories_dropdown_options() {
@@ -270,6 +270,19 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 		);
 
 		$this->add_control(
+			'layout_type',
+			array(
+				'label'   => esc_html__( 'Layout Mode', 'ab-addon' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'grid',
+				'options' => array(
+					'grid'   => esc_html__( 'Grid Layout', 'ab-addon' ),
+					'slider' => esc_html__( 'Slider / Carousel', 'ab-addon' ),
+				),
+			)
+		);
+
+		$this->add_control(
 			'card_style',
 			array(
 				'label'   => esc_html__( 'Card Design Style', 'ab-addon' ),
@@ -297,6 +310,9 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 					'2' => esc_html__( '2 Columns', 'ab-addon' ),
 					'3' => esc_html__( '3 Columns', 'ab-addon' ),
 					'4' => esc_html__( '4 Columns', 'ab-addon' ),
+				),
+				'condition'      => array(
+					'layout_type' => 'grid',
 				),
 				'selectors'      => array(
 					'{{WRAPPER}} .ab-blog-grid' => 'display: grid !important; grid-template-columns: repeat({{VALUE}}, 1fr) !important;',
@@ -426,14 +442,123 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 		$this->add_control(
 			'pagination_type',
 			array(
-				'label'   => esc_html__( 'Pagination / Navigation', 'ab-addon' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'none',
-				'options' => array(
+				'label'     => esc_html__( 'Pagination / Navigation', 'ab-addon' ),
+				'type'      => Controls_Manager::SELECT,
+				'default'   => 'none',
+				'options'   => array(
 					'none'           => esc_html__( 'None', 'ab-addon' ),
 					'numeric'        => esc_html__( 'Numeric Page Numbers', 'ab-addon' ),
 					'ajax_load_more' => esc_html__( 'AJAX Load More Button', 'ab-addon' ),
 				),
+				'condition' => array(
+					'layout_type' => 'grid',
+				),
+			)
+		);
+
+		$this->end_controls_section();
+
+		// ==========================================
+		// SECTION: SLIDER SETTINGS
+		// ==========================================
+		$this->start_controls_section(
+			'section_slider_options',
+			array(
+				'label'     => esc_html__( 'Slider Settings', 'ab-addon' ),
+				'tab'       => Controls_Manager::TAB_CONTENT,
+				'condition' => array(
+					'layout_type' => 'slider',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'slides_to_show',
+			array(
+				'label'          => esc_html__( 'Slides to Show', 'ab-addon' ),
+				'type'           => Controls_Manager::SELECT,
+				'default'        => '3',
+				'tablet_default' => '2',
+				'mobile_default' => '1',
+				'options'        => array(
+					'1' => '1',
+					'2' => '2',
+					'3' => '3',
+					'4' => '4',
+				),
+			)
+		);
+
+		$this->add_responsive_control(
+			'slides_gap',
+			array(
+				'label'      => esc_html__( 'Gap between Slides (px)', 'ab-addon' ),
+				'type'       => Controls_Manager::SLIDER,
+				'size_units' => array( 'px' ),
+				'range'      => array( 'px' => array( 'min' => 0, 'max' => 60 ) ),
+				'default'    => array( 'unit' => 'px', 'size' => 24 ),
+			)
+		);
+
+		$this->add_control(
+			'slider_autoplay',
+			array(
+				'label'        => esc_html__( 'Autoplay', 'ab-addon' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'ab-addon' ),
+				'label_off'    => esc_html__( 'No', 'ab-addon' ),
+				'return_value' => 'yes',
+				'default'      => 'no',
+			)
+		);
+
+		$this->add_control(
+			'slider_autoplay_speed',
+			array(
+				'label'     => esc_html__( 'Autoplay Speed (ms)', 'ab-addon' ),
+				'type'      => Controls_Manager::NUMBER,
+				'default'   => 3000,
+				'min'       => 1000,
+				'step'      => 500,
+				'condition' => array(
+					'slider_autoplay' => 'yes',
+				),
+			)
+		);
+
+		$this->add_control(
+			'slider_loop',
+			array(
+				'label'        => esc_html__( 'Infinite Loop', 'ab-addon' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Yes', 'ab-addon' ),
+				'label_off'    => esc_html__( 'No', 'ab-addon' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+			)
+		);
+
+		$this->add_control(
+			'slider_arrows',
+			array(
+				'label'        => esc_html__( 'Navigation Arrows', 'ab-addon' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Show', 'ab-addon' ),
+				'label_off'    => esc_html__( 'Hide', 'ab-addon' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
+			)
+		);
+
+		$this->add_control(
+			'slider_dots',
+			array(
+				'label'        => esc_html__( 'Pagination Dots', 'ab-addon' ),
+				'type'         => Controls_Manager::SWITCHER,
+				'label_on'     => esc_html__( 'Show', 'ab-addon' ),
+				'label_off'    => esc_html__( 'Hide', 'ab-addon' ),
+				'return_value' => 'yes',
+				'default'      => 'yes',
 			)
 		);
 
@@ -1167,6 +1292,120 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 		$this->end_controls_tabs();
 
 		$this->end_controls_section();
+
+		// ==========================================
+		// STYLE TAB: SLIDER ARROWS & DOTS
+		// ==========================================
+		$this->start_controls_section(
+			'section_style_slider',
+			array(
+				'label'     => esc_html__( 'Slider Arrows & Dots', 'ab-addon' ),
+				'tab'       => Controls_Manager::TAB_STYLE,
+				'condition' => array(
+					'layout_type' => 'slider',
+				),
+			)
+		);
+
+		$this->add_control(
+			'heading_arrows_style',
+			array(
+				'label'     => esc_html__( 'Navigation Arrows', 'ab-addon' ),
+				'type'      => Controls_Manager::HEADING,
+				'condition' => array(
+					'slider_arrows' => 'yes',
+				),
+			)
+		);
+
+		$this->add_control(
+			'arrow_color',
+			array(
+				'label'     => esc_html__( 'Arrow Icon Color', 'ab-addon' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#1e293b',
+				'selectors' => array(
+					'{{WRAPPER}} .ab-slider-arrow' => 'color: {{VALUE}};',
+				),
+				'condition' => array(
+					'slider_arrows' => 'yes',
+				),
+			)
+		);
+
+		$this->add_control(
+			'arrow_bg_color',
+			array(
+				'label'     => esc_html__( 'Arrow Background', 'ab-addon' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#ffffff',
+				'selectors' => array(
+					'{{WRAPPER}} .ab-slider-arrow' => 'background-color: {{VALUE}};',
+				),
+				'condition' => array(
+					'slider_arrows' => 'yes',
+				),
+			)
+		);
+
+		$this->add_control(
+			'arrow_hover_bg_color',
+			array(
+				'label'     => esc_html__( 'Arrow Hover Background', 'ab-addon' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#ff4500',
+				'selectors' => array(
+					'{{WRAPPER}} .ab-slider-arrow:hover' => 'background-color: {{VALUE}}; color: #ffffff;',
+				),
+				'condition' => array(
+					'slider_arrows' => 'yes',
+				),
+			)
+		);
+
+		$this->add_control(
+			'heading_dots_style',
+			array(
+				'label'     => esc_html__( 'Pagination Dots', 'ab-addon' ),
+				'type'      => Controls_Manager::HEADING,
+				'separator' => 'before',
+				'condition' => array(
+					'slider_dots' => 'yes',
+				),
+			)
+		);
+
+		$this->add_control(
+			'dots_color',
+			array(
+				'label'     => esc_html__( 'Dot Color', 'ab-addon' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#cbd5e1',
+				'selectors' => array(
+					'{{WRAPPER}} .ab-slider-pagination .swiper-pagination-bullet' => 'background-color: {{VALUE}};',
+				),
+				'condition' => array(
+					'slider_dots' => 'yes',
+				),
+			)
+		);
+
+		$this->add_control(
+			'dots_active_color',
+			array(
+				'label'     => esc_html__( 'Active Dot Color', 'ab-addon' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#ff4500',
+				'selectors' => array(
+					'{{WRAPPER}} .ab-slider-pagination .swiper-pagination-bullet-active' => 'background-color: {{VALUE}};',
+				),
+				'condition' => array(
+					'slider_dots' => 'yes',
+				),
+			)
+		);
+
+		$this->end_controls_section();
 	}
 
 	protected function render() {
@@ -1219,6 +1458,8 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 
 		$query = new WP_Query( $args );
 
+		$layout_type = ! empty( $settings['layout_type'] ) ? $settings['layout_type'] : 'grid';
+
 		// Grid wrapper classes
 		$grid_classes = array(
 			'ab-blog-grid',
@@ -1227,8 +1468,43 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 			'ab-ratio-' . ( ! empty( $settings['image_style_ratio'] ) ? str_replace( '/', '-', $settings['image_style_ratio'] ) : '16-9' ),
 		);
 
-		if ( 'yes' === $settings['card_hover_lift'] ) {
+		if ( ! empty( $settings['card_hover_lift'] ) && 'yes' === $settings['card_hover_lift'] ) {
 			$grid_classes[] = 'has-hover-lift';
+		}
+
+		// Slider settings & configuration
+		$slider_config = array();
+		$slider_arrows = true;
+		$slider_dots   = true;
+
+		if ( 'slider' === $layout_type ) {
+			$slides_to_show        = ! empty( $settings['slides_to_show'] ) ? intval( $settings['slides_to_show'] ) : 3;
+			$slides_to_show_tablet = ! empty( $settings['slides_to_show_tablet'] ) ? intval( $settings['slides_to_show_tablet'] ) : min( 2, $slides_to_show );
+			$slides_to_show_mobile = ! empty( $settings['slides_to_show_mobile'] ) ? intval( $settings['slides_to_show_mobile'] ) : 1;
+
+			$slides_gap        = ( isset( $settings['slides_gap']['size'] ) && '' !== $settings['slides_gap']['size'] ) ? intval( $settings['slides_gap']['size'] ) : 24;
+			$slides_gap_tablet = ( isset( $settings['slides_gap_tablet']['size'] ) && '' !== $settings['slides_gap_tablet']['size'] ) ? intval( $settings['slides_gap_tablet']['size'] ) : min( 20, $slides_gap );
+			$slides_gap_mobile = ( isset( $settings['slides_gap_mobile']['size'] ) && '' !== $settings['slides_gap_mobile']['size'] ) ? intval( $settings['slides_gap_mobile']['size'] ) : min( 16, $slides_gap );
+
+			$slider_autoplay       = ( isset( $settings['slider_autoplay'] ) && 'yes' === $settings['slider_autoplay'] );
+			$slider_autoplay_speed = ! empty( $settings['slider_autoplay_speed'] ) ? intval( $settings['slider_autoplay_speed'] ) : 3000;
+			$slider_loop           = ( ! isset( $settings['slider_loop'] ) || 'yes' === $settings['slider_loop'] );
+			$slider_arrows         = ( ! isset( $settings['slider_arrows'] ) || 'yes' === $settings['slider_arrows'] );
+			$slider_dots           = ( ! isset( $settings['slider_dots'] ) || 'yes' === $settings['slider_dots'] );
+
+			$slider_config = array(
+				'slidesPerView'       => $slides_to_show,
+				'slidesPerViewTablet' => $slides_to_show_tablet,
+				'slidesPerViewMobile' => $slides_to_show_mobile,
+				'spaceBetween'        => $slides_gap,
+				'spaceBetweenTablet'  => $slides_gap_tablet,
+				'spaceBetweenMobile'  => $slides_gap_mobile,
+				'autoplay'            => $slider_autoplay,
+				'autoplaySpeed'       => $slider_autoplay_speed,
+				'loop'                => $slider_loop,
+				'arrows'              => $slider_arrows,
+				'dots'                => $slider_dots,
+			);
 		}
 
 		$widget_id = $this->get_id();
@@ -1240,6 +1516,7 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 			'orderby'              => $orderby,
 			'order'                => $order,
 			'offset'               => $offset,
+			'layout_type'          => $layout_type,
 			'columns'              => isset( $settings['columns'] ) ? $settings['columns'] : '3',
 			'card_style'           => $settings['card_style'],
 			'image_sizing_method'  => ! empty( $settings['image_sizing_method'] ) ? $settings['image_sizing_method'] : 'height',
@@ -1305,20 +1582,58 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 			endif;
 			?>
 
-			<!-- Grid Container -->
-			<div class="<?php echo esc_attr( implode( ' ', $grid_classes ) ); ?>">
-				<?php
-				if ( $query->have_posts() ) :
-					while ( $query->have_posts() ) :
-						$query->the_post();
-						self::render_single_card( $settings );
-					endwhile;
-					wp_reset_postdata();
-				else :
-					echo '<div class="ab-grid-no-posts"><p>' . esc_html__( 'No blog posts found.', 'ab-addon' ) . '</p></div>';
-				endif;
-				?>
-			</div>
+			<?php if ( 'slider' === $layout_type ) : ?>
+				<!-- Slider Container -->
+				<div class="ab-blog-slider-wrap ab-style-<?php echo esc_attr( ! empty( $settings['card_style'] ) ? $settings['card_style'] : 'modern' ); ?><?php echo $slider_dots ? ' has-dots' : ' no-dots'; ?>" data-slider-config="<?php echo esc_attr( wp_json_encode( $slider_config ) ); ?>">
+					<div class="ab-blog-slider swiper swiper-container<?php echo $slider_dots ? '' : ' no-dots'; ?>">
+						<div class="swiper-wrapper">
+							<?php
+							if ( $query->have_posts() ) :
+								while ( $query->have_posts() ) :
+									$query->the_post();
+									?>
+									<div class="swiper-slide">
+										<?php self::render_single_card( $settings ); ?>
+									</div>
+									<?php
+								endwhile;
+								wp_reset_postdata();
+							else :
+								echo '<div class="ab-grid-no-posts"><p>' . esc_html__( 'No blog posts found.', 'ab-addon' ) . '</p></div>';
+							endif;
+							?>
+						</div>
+					</div>
+
+					<?php if ( $slider_arrows ) : ?>
+						<div class="ab-slider-arrow ab-slider-prev" role="button" aria-label="<?php esc_attr_e( 'Previous slide', 'ab-addon' ); ?>" tabindex="0">
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+						</div>
+						<div class="ab-slider-arrow ab-slider-next" role="button" aria-label="<?php esc_attr_e( 'Next slide', 'ab-addon' ); ?>" tabindex="0">
+							<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+						</div>
+					<?php endif; ?>
+
+					<?php if ( $slider_dots ) : ?>
+						<div class="ab-slider-pagination swiper-pagination"></div>
+					<?php endif; ?>
+				</div>
+			<?php else : ?>
+				<!-- Grid Container -->
+				<div class="<?php echo esc_attr( implode( ' ', $grid_classes ) ); ?>">
+					<?php
+					if ( $query->have_posts() ) :
+						while ( $query->have_posts() ) :
+							$query->the_post();
+							self::render_single_card( $settings );
+						endwhile;
+						wp_reset_postdata();
+					else :
+						echo '<div class="ab-grid-no-posts"><p>' . esc_html__( 'No blog posts found.', 'ab-addon' ) . '</p></div>';
+					endif;
+					?>
+				</div>
+			<?php endif; ?>
 
 			<!-- Loader Overlay -->
 			<div class="ab-grid-loader" style="display:none;">
@@ -1326,8 +1641,8 @@ class AB_Blog_Grid_Widget extends Widget_Base {
 			</div>
 
 			<?php
-			// Render Pagination or Load More
-			if ( $query->max_num_pages > 1 ) :
+			// Render Pagination or Load More (only in grid layout)
+			if ( 'grid' === $layout_type && $query->max_num_pages > 1 ) :
 				if ( 'numeric' === $settings['pagination_type'] ) :
 					?>
 					<div class="ab-grid-pagination">

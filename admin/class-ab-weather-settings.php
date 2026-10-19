@@ -172,7 +172,26 @@ class AB_Weather_Settings {
 
 		$current_provider = $service->get_provider( $settings['provider'] ) ?? $providers['met_norway'];
 		?>
-		<div class="wrap ab-settings-wrap">
+		<div class="wrap ab-settings-wrap" style="padding-top: 20px;">
+			<!-- Navigation Tabs -->
+			<nav class="nav-tab-wrapper ab-admin-nav-tabs" style="margin-bottom: 20px;">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=ab-settings' ) ); ?>" class="nav-tab">
+					<span class="dashicons dashicons-megaphone"></span> <?php esc_html_e( 'Popups', 'ab-addon' ); ?>
+				</a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=ab-widgets' ) ); ?>" class="nav-tab">
+					<span class="dashicons dashicons-screenoptions"></span> <?php esc_html_e( 'Widgets', 'ab-addon' ); ?>
+				</a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=ab-archive-templates' ) ); ?>" class="nav-tab">
+					<span class="dashicons dashicons-layout"></span> <?php esc_html_e( 'Archive Templates', 'ab-addon' ); ?>
+				</a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=ab-slider-settings' ) ); ?>" class="nav-tab">
+					<span class="dashicons dashicons-images-alt2"></span> <?php esc_html_e( 'Sliders', 'ab-addon' ); ?>
+				</a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=ab-weather-settings' ) ); ?>" class="nav-tab nav-tab-active">
+					<span class="dashicons dashicons-cloud"></span> <?php esc_html_e( 'Ramdevra Weather', 'ab-addon' ); ?>
+				</a>
+			</nav>
+
 			<div class="ab-settings-header">
 				<div class="ab-settings-title-area">
 					<h1><?php esc_html_e( 'AB Weather — Ramdevra Weather', 'ab-addon' ); ?></h1>

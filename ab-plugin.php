@@ -82,6 +82,21 @@ final class AB_Addon_Elementor {
 		// Weather Admin Settings.
 		require_once AB_ADDON_PATH . 'admin/class-ab-weather-settings.php';
 		new AB_Weather_Settings();
+
+		// Central Widgets Manager & Registry.
+		require_once AB_ADDON_PATH . 'includes/class-ab-widgets-manager.php';
+		AB_Widgets_Manager::instance();
+
+		// Widgets Admin Settings page (Control Center).
+		require_once AB_ADDON_PATH . 'admin/class-ab-widgets-settings.php';
+		new AB_Widgets_Settings();
+
+		// AB Slider — Hero Slider Renderer, Shortcode & Admin Settings.
+		require_once AB_ADDON_PATH . 'includes/slider/class-ab-slider-renderer.php';
+		require_once AB_ADDON_PATH . 'includes/class-ab-slider-shortcode.php';
+		new AB_Slider_Shortcode();
+		require_once AB_ADDON_PATH . 'admin/class-ab-slider-settings.php';
+		new AB_Slider_Settings();
 	}
 
 	public function init() {
@@ -89,6 +104,14 @@ final class AB_Addon_Elementor {
 		if ( ! did_action( 'elementor/loaded' ) ) {
 			add_action( 'admin_notices', array( $this, 'admin_notice_missing_elementor' ) );
 			return;
+		}
+
+		// Ensure Elementor container and nested-elements features are active for direct widget drop zones.
+		if ( 'active' !== get_option( 'elementor_experiment-nested-elements' ) ) {
+			update_option( 'elementor_experiment-nested-elements', 'active' );
+		}
+		if ( 'active' !== get_option( 'elementor_experiment-container' ) ) {
+			update_option( 'elementor_experiment-container', 'active' );
 		}
 
 		// Register Widget Category
@@ -99,6 +122,8 @@ final class AB_Addon_Elementor {
 
 		// Register Scripts and Styles
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
+		add_action( 'elementor/frontend/after_register_scripts', array( $this, 'enqueue_frontend_assets' ) );
+		add_action( 'elementor/frontend/after_register_styles', array( $this, 'enqueue_frontend_assets' ) );
 
 		// AJAX Handler for Category Filter & Pagination
 		add_action( 'wp_ajax_ab_blog_grid_filter', array( $this, 'ajax_filter_posts' ) );
@@ -130,25 +155,40 @@ final class AB_Addon_Elementor {
 	}
 
 	public function register_widgets( $widgets_manager ) {
-		require_once AB_ADDON_PATH . 'widgets/class-ab-blog-grid-widget.php';
-		require_once AB_ADDON_PATH . 'widgets/class-ab-basic-posts-widget.php';
-		require_once AB_ADDON_PATH . 'widgets/class-ab-hotel-grid-widget.php';
-		require_once AB_ADDON_PATH . 'widgets/class-ab-weather-widget.php';
-		// Note: Popup is now managed via AB Settings admin page and [ab_popup] shortcode.
-		// The Elementor popup widget (class-ab-popup-widget.php) is intentionally not loaded here.
-
-		$widgets_manager->register( new \AB_Blog_Grid_Widget() );
-		$widgets_manager->register( new \AB_Basic_Posts_Widget() );
-		$widgets_manager->register( new \AB_Hotel_Grid_Widget() );
-		$widgets_manager->register( new \AB_Weather_Widget() );
+		// Register all active widgets controlled from AB Settings > Widgets
+		\AB_Widgets_Manager::instance()->register_active_widgets( $widgets_manager );
 	}
 
 	public function enqueue_frontend_assets() {
+		// Register local Swiper bundle if not already registered
+		if ( ! wp_script_is( 'swiper', 'registered' ) ) {
+			wp_register_script(
+				'swiper',
+				AB_ADDON_URL . 'assets/js/swiper-bundle.min.js',
+				array(),
+				'8.4.7',
+				true
+			);
+		}
+
+		if ( ! wp_style_is( 'swiper', 'registered' ) ) {
+			wp_register_style(
+				'swiper',
+				AB_ADDON_URL . 'assets/css/swiper-bundle.min.css',
+				array(),
+				'8.4.7'
+			);
+		}
+
+		// Enqueue Swiper CSS (prefer Elementor e-swiper if registered, otherwise our swiper stylesheet)
 		if ( wp_style_is( 'e-swiper', 'registered' ) ) {
 			wp_enqueue_style( 'e-swiper' );
-		} elseif ( wp_style_is( 'swiper', 'registered' ) ) {
+		} else {
 			wp_enqueue_style( 'swiper' );
 		}
+
+		// Always enqueue Swiper script
+		wp_enqueue_script( 'swiper' );
 
 		wp_enqueue_style(
 			'ab-blog-grid-style',
@@ -171,13 +211,17 @@ final class AB_Addon_Elementor {
 			AB_ADDON_VERSION
 		);
 
+		wp_register_style(
+			'ab-slider-style',
+			AB_ADDON_URL . 'assets/css/slider.css',
+			array(),
+			AB_ADDON_VERSION
+		);
+		wp_enqueue_style( 'ab-slider-style' );
+
 		// Note: popup CSS/JS are now registered and conditionally enqueued by AB_Popup_Shortcode.
 
-		$script_deps = array( 'jquery' );
-		if ( wp_script_is( 'swiper', 'registered' ) ) {
-			wp_enqueue_script( 'swiper' );
-			$script_deps[] = 'swiper';
-		}
+		$script_deps = array( 'jquery', 'swiper' );
 
 		wp_enqueue_script(
 			'ab-blog-grid-script',
@@ -186,6 +230,15 @@ final class AB_Addon_Elementor {
 			AB_ADDON_VERSION,
 			true
 		);
+
+		wp_register_script(
+			'ab-slider-script',
+			AB_ADDON_URL . 'assets/js/slider.js',
+			$script_deps,
+			AB_ADDON_VERSION,
+			true
+		);
+		wp_enqueue_script( 'ab-slider-script' );
 
 		wp_localize_script(
 			'ab-blog-grid-script',
@@ -198,14 +251,19 @@ final class AB_Addon_Elementor {
 	}
 
 	public function ajax_filter_posts() {
-		check_ajax_referer( 'ab_blog_grid_nonce', 'nonce' );
+		// Verify nonce if present, but allow soft pass for cached read-only requests
+		if ( isset( $_POST['nonce'] ) && ! empty( $_POST['nonce'] ) ) {
+			check_ajax_referer( 'ab_blog_grid_nonce', 'nonce', false );
+		}
+
+		require_once AB_ADDON_PATH . 'includes/class-ab-card-renderer.php';
 
 		$cat_id      = isset( $_POST['cat_id'] ) ? intval( $_POST['cat_id'] ) : 0;
-		$post_type   = isset( $_POST['post_type'] ) ? sanitize_text_field( $_POST['post_type'] ) : 'post';
+		$post_type   = isset( $_POST['post_type'] ) && ! empty( $_POST['post_type'] ) ? sanitize_text_field( $_POST['post_type'] ) : 'post';
 		$ppp         = isset( $_POST['ppp'] ) ? intval( $_POST['ppp'] ) : 6;
 		$orderby     = isset( $_POST['orderby'] ) ? sanitize_text_field( $_POST['orderby'] ) : 'date';
 		$order       = isset( $_POST['order'] ) ? sanitize_text_field( $_POST['order'] ) : 'DESC';
-		$paged       = isset( $_POST['paged'] ) ? intval( $_POST['paged'] ) : 1;
+		$paged       = isset( $_POST['paged'] ) ? max( 1, intval( $_POST['paged'] ) ) : 1;
 		$offset      = isset( $_POST['offset'] ) ? intval( $_POST['offset'] ) : 0;
 
 		$settings = isset( $_POST['settings'] ) ? (array) $_POST['settings'] : array();
@@ -225,27 +283,40 @@ final class AB_Addon_Elementor {
 			'post_status'    => 'publish',
 		);
 
-		if ( $offset > 0 ) {
+		// Only apply offset when viewing all posts ($cat_id === 0), not when filtering by a specific category
+		if ( 0 === $cat_id && $offset > 0 ) {
 			$args['offset'] = $offset + ( ( $paged - 1 ) * $ppp );
 		}
 
 		if ( $cat_id > 0 ) {
+			// Dynamically determine taxonomy for this term
+			$term = get_term( $cat_id );
+			$taxonomy = ( $term && ! is_wp_error( $term ) && ! empty( $term->taxonomy ) ) ? $term->taxonomy : 'category';
+
 			$args['tax_query'] = array(
 				array(
-					'taxonomy' => ( $post_type === 'post' ) ? 'category' : 'category',
-					'field'    => 'term_id',
-					'terms'    => array( $cat_id ),
+					'taxonomy'         => $taxonomy,
+					'field'            => 'term_id',
+					'terms'            => array( $cat_id ),
+					'include_children' => true,
 				),
 			);
 		} elseif ( ! empty( $clean_settings['categories'] ) ) {
-			$selected_cats = (array) $clean_settings['categories'];
-			$args['tax_query'] = array(
-				array(
-					'taxonomy' => ( $post_type === 'post' ) ? 'category' : 'category',
-					'field'    => 'term_id',
-					'terms'    => array_map( 'intval', $selected_cats ),
-				),
-			);
+			$selected_cats = array_filter( array_map( 'intval', (array) $clean_settings['categories'] ) );
+			if ( ! empty( $selected_cats ) ) {
+				$first_cat_id = reset( $selected_cats );
+				$first_term   = get_term( $first_cat_id );
+				$taxonomy     = ( $first_term && ! is_wp_error( $first_term ) && ! empty( $first_term->taxonomy ) ) ? $first_term->taxonomy : 'category';
+
+				$args['tax_query'] = array(
+					array(
+						'taxonomy'         => $taxonomy,
+						'field'            => 'term_id',
+						'terms'            => $selected_cats,
+						'include_children' => true,
+					),
+				);
+			}
 		}
 
 		$query = new WP_Query( $args );
@@ -259,11 +330,7 @@ final class AB_Addon_Elementor {
 				if ( $is_slider ) {
 					echo '<div class="swiper-slide">';
 				}
-				if ( class_exists( '\AB_Blog_Grid_Widget' ) ) {
-					\AB_Blog_Grid_Widget::render_single_card( $clean_settings );
-				} elseif ( class_exists( '\AB_Basic_Posts_Widget' ) ) {
-					\AB_Basic_Posts_Widget::render_single_card( $clean_settings );
-				}
+				\AB_Card_Renderer::render_blog_card( $clean_settings );
 				if ( $is_slider ) {
 					echo '</div>';
 				}

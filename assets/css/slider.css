@@ -1,0 +1,616 @@
+/**
+ * AB Hero Slider Styles
+ *
+ * High-performance, responsive full-width Hero Banner Slider.
+ * Provides rich entrance animations, dark/gradient overlay, glassmorphism navigation,
+ * and seamless mobile responsiveness.
+ *
+ * @package AB_Addon
+ */
+
+/* ==========================================================================
+   1. SLIDER CONTAINER & WRAPPER
+   ========================================================================== */
+
+.ab-hero-slider-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  --ab-slide-h: var(--ab-slide-h-desk, 560px);
+  --ab-primary-color: #f97316;
+  --ab-primary-hover: #ea580c;
+}
+
+@media (max-width: 1024px) {
+  .ab-hero-slider-wrap {
+    --ab-slide-h: var(--ab-slide-h-tab, 460px);
+  }
+}
+
+@media (max-width: 767px) {
+  .ab-hero-slider-wrap {
+    --ab-slide-h: var(--ab-slide-h-mob, 380px);
+  }
+}
+
+.ab-hero-slider {
+  position: relative;
+  width: 100%;
+  height: var(--ab-slide-h);
+  overflow: hidden;
+}
+
+.ab-hero-slider .swiper-wrapper {
+  height: 100%;
+  display: flex;
+}
+
+/* ==========================================================================
+   2. SLIDE LAYOUT & LAYERS
+   ========================================================================== */
+
+.ab-hero-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background-color: #0f172a;
+}
+
+/* Slide full clickable overlay if link is set */
+.ab-slide-full-link {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: block;
+  cursor: pointer;
+}
+
+/* Background image layer */
+.ab-slide-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  transform: scale(1);
+  transition: transform 6s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+.swiper-slide-active .ab-slide-bg {
+  transform: scale(1.05);
+}
+
+/* Placeholder gradient if no background image */
+.ab-slide-placeholder-gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, #334155 0%, #0f172a 100%);
+}
+
+/* Dark / Gradient Overlay */
+.ab-slide-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: rgba(15, 23, 42, 0.5);
+  transition: background 0.3s ease;
+}
+
+/* ==========================================================================
+   3. CONTENT CONTAINER & TYPOGRAPHY
+   ========================================================================== */
+
+.ab-slide-container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .ab-slide-container {
+    padding: 0 20px;
+  }
+}
+
+.ab-slide-content {
+  width: 100%;
+  max-width: var(--ab-slide-max-w, 820px);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* Alignments */
+.ab-align-center .ab-slide-container {
+  justify-content: center;
+}
+.ab-align-center .ab-slide-content {
+  align-items: center;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.ab-align-left .ab-slide-container {
+  justify-content: flex-start;
+}
+.ab-align-left .ab-slide-content {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.ab-align-right .ab-slide-container {
+  justify-content: flex-end;
+}
+.ab-align-right .ab-slide-content {
+  align-items: flex-end;
+  text-align: right;
+}
+
+/* Eyebrow / Badge */
+.ab-slide-badge-wrap {
+  margin-bottom: 14px;
+}
+
+.ab-slide-badge {
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffffff;
+  background: rgba(249, 115, 22, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+
+/* Slide Title */
+.ab-slide-title {
+  margin: 0 0 16px 0;
+  padding: 0;
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 1024px) {
+  .ab-slide-title {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 767px) {
+  .ab-slide-title {
+    font-size: 26px;
+    margin-bottom: 12px;
+  }
+}
+
+/* Slide Description */
+.ab-slide-desc {
+  margin: 0 0 26px 0;
+  padding: 0;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  max-width: 760px;
+}
+
+@media (max-width: 767px) {
+  .ab-slide-desc {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+}
+
+/* Buttons Group */
+.ab-slide-buttons {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .ab-slide-buttons {
+    gap: 10px;
+  }
+}
+
+.ab-align-center .ab-slide-buttons {
+  justify-content: center;
+}
+.ab-align-left .ab-slide-buttons {
+  justify-content: flex-start;
+}
+.ab-align-right .ab-slide-buttons {
+  justify-content: flex-end;
+}
+
+/* Button Styles */
+.ab-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 26px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none !important;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+@media (max-width: 767px) {
+  .ab-btn {
+    padding: 10px 18px;
+    font-size: 13.5px;
+  }
+}
+
+.ab-btn-primary {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 16px rgba(234, 88, 12, 0.4);
+}
+
+.ab-btn-primary:hover {
+  background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(234, 88, 12, 0.55);
+}
+
+.ab-btn-secondary {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.ab-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+}
+
+.ab-btn-icon {
+  transition: transform 0.2s ease;
+}
+
+.ab-btn-primary:hover .ab-btn-icon {
+  transform: translateX(3px);
+}
+
+/* ==========================================================================
+   4. STAGGERED ENTRANCE ANIMATIONS
+   ========================================================================== */
+
+.ab-slide-badge-wrap,
+.ab-slide-title,
+.ab-slide-desc,
+.ab-slide-buttons {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.swiper-slide-active .ab-slide-badge-wrap {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.15s;
+}
+
+.swiper-slide-active .ab-slide-title {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.28s;
+}
+
+.swiper-slide-active .ab-slide-desc {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.42s;
+}
+
+.swiper-slide-active .ab-slide-buttons {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.55s;
+}
+
+/* ==========================================================================
+   5. NAVIGATION CONTROLS (ARROWS & PAGINATION)
+   ========================================================================== */
+
+.ab-slider-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: var(--ab-arrow-size, 48px);
+  height: var(--ab-arrow-size, 48px);
+  border-radius: var(--ab-arrow-radius, 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.45);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  outline: none;
+  padding: 0;
+}
+
+.ab-slider-nav:hover {
+  background: rgba(249, 115, 22, 0.85);
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #ffffff;
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.ab-slider-prev {
+  left: 24px;
+}
+
+.ab-slider-next {
+  right: 24px;
+}
+
+@media (max-width: 767px) {
+  .ab-slider-nav {
+    width: 38px;
+    height: 38px;
+  }
+  .ab-slider-prev {
+    left: 12px;
+  }
+  .ab-slider-next {
+    right: 12px;
+  }
+  .ab-slider-nav svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Arrows Position: Outside */
+.ab-hero-slider-wrap.ab-arrows-outside {
+  overflow: visible;
+  padding-left: 56px;
+  padding-right: 56px;
+}
+.ab-hero-slider-wrap.ab-arrows-outside .ab-slider-prev {
+  left: 0;
+}
+.ab-hero-slider-wrap.ab-arrows-outside .ab-slider-next {
+  right: 0;
+}
+
+@media (max-width: 767px) {
+  .ab-hero-slider-wrap.ab-arrows-outside {
+    padding-left: 42px;
+    padding-right: 42px;
+  }
+}
+
+/* Dots Position: Outside */
+.ab-hero-slider-wrap.ab-dots-outside .swiper-pagination {
+  position: relative !important;
+  bottom: auto !important;
+  margin-top: 18px;
+  padding-bottom: 6px;
+}
+
+/* Pagination Dots */
+.ab-hero-slider .swiper-pagination {
+  position: absolute;
+  bottom: 22px !important;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ab-dot-gap, 8px);
+  padding: 0;
+  margin: 0;
+}
+
+.ab-hero-slider .swiper-pagination-bullet {
+  width: var(--ab-dot-size, 10px);
+  height: var(--ab-dot-size, 10px);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 1;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  margin: 0 !important;
+}
+
+.ab-hero-slider .swiper-pagination-bullet:hover {
+  background: rgba(255, 255, 255, 0.85);
+  transform: scale(1.2);
+}
+
+.ab-hero-slider .swiper-pagination-bullet-active {
+  width: var(--ab-dot-active-width, 28px);
+  border-radius: 8px;
+  background: #f97316;
+  box-shadow: 0 0 10px rgba(249, 115, 22, 0.7);
+}
+
+/* Fallback / Error state */
+.ab-slider-error {
+  padding: 20px;
+  background: #fff7ed;
+  border-left: 4px solid #f97316;
+  color: #9a3412;
+  margin: 20px 0;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   6. ELEMENTOR TEMPLATE SLIDE CONTAINER
+   ========================================================================== */
+.ab-slide-template-container {
+  position: relative;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ab-slide-template-container > .elementor {
+  width: 100%;
+}
+
+.ab-slide-template-placeholder {
+  position: relative;
+  z-index: 4;
+  padding: 40px;
+  text-align: center;
+  background: rgba(15, 23, 42, 0.4);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  margin: 20px;
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   7. NESTED SLIDER (DIRECT WIDGET DROP ZONES)
+   ========================================================================== */
+.ab-nested-slider-wrap {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.ab-nested-slide {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.ab-nested-slide-content {
+  position: relative;
+  z-index: 5;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  pointer-events: auto;
+}
+
+.ab-nested-slide-content > .e-con,
+.ab-nested-slide-content > .elementor-element {
+  width: 100%;
+  height: 100%;
+  flex-grow: 1;
+}
+
+/* Editor drop zone enhancements */
+body.elementor-editor-active .ab-hero-slider-wrap .ab-slide-bg,
+body.elementor-editor-active .ab-hero-slider-wrap .ab-slide-overlay {
+  pointer-events: none !important;
+}
+
+body.elementor-editor-active .ab-nested-slide {
+  overflow: visible !important;
+}
+
+body.elementor-editor-active .ab-nested-slide-content {
+  min-height: 280px;
+  height: 100%;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto !important;
+}
+
+body.elementor-editor-active .ab-nested-slide-content > .e-con {
+  width: 100%;
+  min-height: 240px;
+  flex-grow: 1;
+  pointer-events: auto !important;
+}
+
+body.elementor-editor-active .ab-nested-slide-content > .e-con.e-con-empty {
+  min-height: 220px;
+  border: 2px dashed rgba(249, 115, 22, 0.45);
+  border-radius: 8px;
+  margin: 10px;
+  background: rgba(15, 23, 42, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.elementor-editor-active .ab-nested-slide-content .elementor-empty-view {
+  min-height: 140px;
+}
+
+.ab-nested-slide-empty-prompt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  margin: 15px;
+  border: 2px dashed rgba(249, 115, 22, 0.6);
+  border-radius: 10px;
+  background: rgba(255, 247, 237, 0.9);
+  color: #c2410c;
+  text-align: center;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.ab-nested-slide-empty-prompt p {
+  margin: 4px 0;
+  font-size: 13.5px;
+  line-height: 1.4;
+}

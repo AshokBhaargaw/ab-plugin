@@ -466,3 +466,114 @@
   width: 18px;
   height: 18px;
 }
+
+/* ==========================================================================
+   AB Widgets Control Center Styles
+   ========================================================================== */
+
+/* Card States & Hover */
+.ab-widget-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.08) !important;
+  border-color: #cbd5e1 !important;
+}
+
+.ab-widget-card.is-active {
+  border-left: 3px solid #6c63ff !important;
+}
+
+.ab-widget-card.is-active .ab-widget-icon {
+  color: #6c63ff !important;
+}
+
+.ab-widget-card.is-created {
+  background: #fbfdff !important;
+}
+
+.ab-widget-card.is-created.is-active {
+  border-left: 3px solid #10b981 !important;
+}
+
+/* iOS Style Switch */
+.ab-switch input:checked + .ab-slider {
+  background-color: #6c63ff !important;
+}
+
+.ab-switch input:focus + .ab-slider {
+  box-shadow: 0 0 1px #6c63ff;
+}
+
+.ab-switch input:checked + .ab-slider:before {
+  transform: translateX(16px);
+}
+
+.ab-slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.25s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Floating Toast Notification */
+.ab-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: #1e293b;
+  color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 999999;
+}
+
+.ab-toast .dashicons {
+  color: #10b981;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.ab-toast.is-error {
+  background: #ef4444;
+}
+
+.ab-toast.is-error .dashicons {
+  color: #ffffff;
+}
+
+/* Responsive Grid */
+@media (max-width: 1400px) {
+  .ab-widgets-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 1100px) {
+  .ab-widgets-layout {
+    flex-direction: column !important;
+  }
+  .ab-widgets-sidebar {
+    width: 100% !important;
+  }
+  .ab-widgets-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .ab-widgets-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

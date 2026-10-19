@@ -1,8 +1,24 @@
+/**
+ * AB Blog Grid & Basic Posts Script
+ *
+ * Handles AJAX Category Filtering, Load More Pagination, and
+ * Swiper Slider / Carousel layout mode for Blog Grid.
+ *
+ * @package AB_Addon
+ */
+
 (function ($) {
 	'use strict';
 
 	var ABBlogGrid = function ($scope) {
-		var $wrapper    = $scope.find('.ab-blog-grid-wrapper');
+		if (!$scope || !$scope.length) {
+			return;
+		}
+
+		var $wrapper = $scope.hasClass('ab-blog-grid-wrapper') ? $scope : $scope.find('.ab-blog-grid-wrapper');
+		if (!$wrapper.length) {
+			$wrapper = $scope.closest('.ab-blog-grid-wrapper');
+		}
 		if (!$wrapper.length) {
 			return;
 		}
@@ -12,7 +28,17 @@
 		var $loader     = $wrapper.find('.ab-grid-loader');
 		var $filterBtns = $wrapper.find('.ab-filter-btn');
 		var $loadMoreBtn= $wrapper.find('.ab-load-more-btn');
+
 		var rawSettings = $wrapper.data('settings');
+		if (typeof rawSettings === 'string') {
+			try {
+				rawSettings = JSON.parse(rawSettings);
+			} catch (e) {
+				rawSettings = {};
+			}
+		} else if (typeof rawSettings !== 'object' || rawSettings === null) {
+			rawSettings = {};
+		}
 
 		var activeCatId = 0;
 		var currentPage = 1;
@@ -41,7 +67,22 @@
 				} catch (e) {}
 			}
 
-			var config = $sliderWrap.data('slider-config') || {};
+			var slideCount = $slider.find('.swiper-slide').length;
+			if (slideCount === 0) {
+				return;
+			}
+
+			var rawSliderConfig = $sliderWrap.data('slider-config');
+			var config = {};
+			if (typeof rawSliderConfig === 'object' && rawSliderConfig !== null) {
+				config = rawSliderConfig;
+			} else if (typeof rawSliderConfig === 'string') {
+				try {
+					config = JSON.parse(rawSliderConfig);
+				} catch (e) {
+					config = {};
+				}
+			}
 
 			var slidesPerView       = parseInt(config.slidesPerView, 10) || 3;
 			var slidesPerViewTablet = parseInt(config.slidesPerViewTablet, 10) || (slidesPerView > 2 ? 2 : slidesPerView);
@@ -51,8 +92,12 @@
 			var spaceBetweenTablet  = typeof config.spaceBetweenTablet !== 'undefined' ? parseInt(config.spaceBetweenTablet, 10) : Math.min(20, spaceBetween);
 			var spaceBetweenMobile  = typeof config.spaceBetweenMobile !== 'undefined' ? parseInt(config.spaceBetweenMobile, 10) : Math.min(16, spaceBetween);
 
-			var slideCount = $slider.find('.swiper-slide').length;
-			var isLoop     = !!config.loop && (slideCount > slidesPerView);
+			var isLoop     = (config.loop === true || config.loop === 'yes') && (slideCount > slidesPerView);
+			var isAutoplay = (config.autoplay === true || config.autoplay === 'yes') && slideCount > 1;
+			var autoplaySpeed = parseInt(config.autoplaySpeed || config.autoplay_speed, 10) || 3000;
+
+			var showArrows = config.arrows !== false && config.arrows !== 'no' && slideCount > 1;
+			var showDots   = config.dots !== false && config.dots !== 'no' && slideCount > 1;
 
 			var swiperOptions = {
 				slidesPerView: slidesPerViewMobile,
@@ -62,80 +107,116 @@
 				watchOverflow: true,
 				observer: true,
 				observeParents: true,
+				watchSlidesProgress: true,
 				breakpoints: {
 					320: {
 						slidesPerView: slidesPerViewMobile,
-						spaceBetween: spaceBetweenMobile
+						spaceBetween: spaceBetweenMobile,
 					},
 					768: {
 						slidesPerView: slidesPerViewTablet,
-						spaceBetween: spaceBetweenTablet
+						spaceBetween: spaceBetweenTablet,
 					},
 					1025: {
 						slidesPerView: slidesPerView,
-						spaceBetween: spaceBetween
-					}
-				}
+						spaceBetween: spaceBetween,
+					},
+				},
 			};
 
-			if (config.autoplay) {
+			if (isAutoplay) {
 				swiperOptions.autoplay = {
-					delay: parseInt(config.autoplaySpeed, 10) || 3000,
+					delay: autoplaySpeed,
 					disableOnInteraction: false,
-					pauseOnMouseEnter: true
+					pauseOnMouseEnter: true,
 				};
 			} else {
 				swiperOptions.autoplay = false;
 			}
 
-			if (config.arrows) {
-				var $prev = $sliderWrap.find('.ab-slider-prev');
-				var $next = $sliderWrap.find('.ab-slider-next');
-				if ($prev.length && $next.length) {
-					swiperOptions.navigation = {
-						prevEl: $prev[0],
-						nextEl: $next[0]
-					};
-				}
+			var $prev = $sliderWrap.find('.ab-slider-prev');
+			var $next = $sliderWrap.find('.ab-slider-next');
+			if (showArrows && $prev.length && $next.length) {
+				$prev.show();
+				$next.show();
+				swiperOptions.navigation = {
+					prevEl: $prev[0],
+					nextEl: $next[0],
+				};
+			} else {
+				$prev.hide();
+				$next.hide();
 			}
 
-			if (config.dots) {
-				var $pagination = $sliderWrap.find('.ab-slider-pagination');
-				if ($pagination.length) {
-					swiperOptions.pagination = {
-						el: $pagination[0],
-						type: 'bullets',
-						clickable: true
-					};
+			var $pagination = $sliderWrap.find('.ab-slider-pagination');
+			if (showDots && $pagination.length) {
+				$pagination.show();
+				swiperOptions.pagination = {
+					el: $pagination[0],
+					type: 'bullets',
+					clickable: true,
+				};
+			} else {
+				$pagination.hide();
+			}
+
+			function onInstReady(instance) {
+				if (!instance) {
+					return;
 				}
+				$slider.data('ab-swiper', instance);
+				setTimeout(function () {
+					if (instance && typeof instance.update === 'function') {
+						instance.update();
+					}
+				}, 100);
 			}
 
 			function createSwiper() {
+				// First try window.Swiper
+				if (typeof window.Swiper !== 'undefined') {
+					try {
+						var instance = new window.Swiper($slider[0], swiperOptions);
+						onInstReady(instance);
+						return;
+					} catch (e) {
+						console.warn('Direct Swiper init error in blog-grid:', e);
+					}
+				}
+
+				// Fallback: Elementor utils.swiper
 				if (typeof elementorFrontend !== 'undefined' && elementorFrontend.utils && typeof elementorFrontend.utils.swiper === 'function') {
-					new elementorFrontend.utils.swiper($slider[0], swiperOptions).then(function (instance) {
-						$slider.data('ab-swiper', instance);
-					}).catch(function () {
-						if (typeof window.Swiper !== 'undefined') {
-							var instance = new window.Swiper($slider[0], swiperOptions);
-							$slider.data('ab-swiper', instance);
+					try {
+						var res = new elementorFrontend.utils.swiper($slider[0], swiperOptions);
+						if (res && typeof res.then === 'function') {
+							res.then(onInstReady).catch(function () {
+								if (typeof window.Swiper !== 'undefined') {
+									var fallbackInst = new window.Swiper($slider[0], swiperOptions);
+									onInstReady(fallbackInst);
+								}
+							});
+						} else if (res) {
+							onInstReady(res);
 						}
-					});
-				} else if (typeof window.Swiper !== 'undefined') {
-					var instance = new window.Swiper($slider[0], swiperOptions);
-					$slider.data('ab-swiper', instance);
+					} catch (err) {
+						if (typeof window.Swiper !== 'undefined') {
+							var fallbackInst = new window.Swiper($slider[0], swiperOptions);
+							onInstReady(fallbackInst);
+						}
+					}
 				}
 			}
 
-			if ((typeof elementorFrontend !== 'undefined' && elementorFrontend.utils && typeof elementorFrontend.utils.swiper === 'function') || typeof window.Swiper !== 'undefined') {
+			if (typeof window.Swiper !== 'undefined' || (typeof elementorFrontend !== 'undefined' && elementorFrontend.utils && typeof elementorFrontend.utils.swiper === 'function')) {
 				createSwiper();
 			} else {
 				var retries = 0;
 				var timer = setInterval(function () {
 					retries++;
-					if ((typeof elementorFrontend !== 'undefined' && elementorFrontend.utils && typeof elementorFrontend.utils.swiper === 'function') || typeof window.Swiper !== 'undefined') {
+					if (typeof window.Swiper !== 'undefined' || (typeof elementorFrontend !== 'undefined' && elementorFrontend.utils && typeof elementorFrontend.utils.swiper === 'function')) {
 						clearInterval(timer);
 						createSwiper();
-					} else if (retries >= 30) {
+					} else if (retries >= 50) {
 						clearInterval(timer);
 					}
 				}, 100);
@@ -145,8 +226,10 @@
 		// Run slider initialization
 		initSlider();
 
-		// --- Category Filter Click ---
-		$filterBtns.on('click', function (e) {
+		var currentXHR = null;
+
+		// --- Category Filter Click (Event Delegation) ---
+		$wrapper.off('click.abFilter', '.ab-filter-btn').on('click.abFilter', '.ab-filter-btn', function (e) {
 			e.preventDefault();
 			var $btn = $(this);
 
@@ -154,17 +237,18 @@
 				return;
 			}
 
-			$filterBtns.removeClass('active');
+			$wrapper.find('.ab-filter-btn').removeClass('active');
 			$btn.addClass('active');
 
-			activeCatId = parseInt($btn.data('cat-id'), 10) || 0;
+			var catAttr = $btn.attr('data-cat-id');
+			activeCatId = (typeof catAttr !== 'undefined' && catAttr !== false) ? (parseInt(catAttr, 10) || 0) : (parseInt($btn.data('cat-id'), 10) || 0);
 			currentPage = 1;
 
 			fetchPosts(false);
 		});
 
 		// --- Load More Click ---
-		$loadMoreBtn.on('click', function (e) {
+		$wrapper.off('click.abLoadMore', '.ab-load-more-btn').on('click.abLoadMore', '.ab-load-more-btn', function (e) {
 			e.preventDefault();
 			currentPage++;
 			fetchPosts(true);
@@ -173,6 +257,12 @@
 		function fetchPosts(isAppend) {
 			if (!rawSettings) {
 				return;
+			}
+
+			// Abort any ongoing request before starting a new one
+			if (currentXHR && typeof currentXHR.abort === 'function') {
+				currentXHR.abort();
+				currentXHR = null;
 			}
 
 			$loader.fadeIn(200);
@@ -185,9 +275,12 @@
 				}
 			}
 
+			var ajaxUrl = (typeof ab_addon_ajax !== 'undefined' && ab_addon_ajax.ajax_url) ? ab_addon_ajax.ajax_url : '/wp-admin/admin-ajax.php';
+			var nonce   = (typeof ab_addon_ajax !== 'undefined' && ab_addon_ajax.nonce) ? ab_addon_ajax.nonce : '';
+
 			var data = {
 				action: 'ab_blog_grid_filter',
-				nonce: ab_addon_ajax.nonce,
+				nonce: nonce,
 				cat_id: activeCatId,
 				paged: currentPage,
 				post_type: rawSettings.post_type || 'post',
@@ -197,14 +290,15 @@
 				offset: rawSettings.offset || 0,
 				card_style: rawSettings.card_style || 'modern',
 				layout_type: rawSettings.layout_type || 'grid',
-				settings: rawSettings
+				settings: rawSettings,
 			};
 
-			$.ajax({
-				url: ab_addon_ajax.ajax_url,
+			currentXHR = $.ajax({
+				url: ajaxUrl,
 				type: 'POST',
 				data: data,
 				success: function (response) {
+					currentXHR = null;
 					$loader.fadeOut(200);
 					if ($grid.length) {
 						$grid.css('opacity', '1');
@@ -213,31 +307,43 @@
 						$sliderWrap.css('opacity', '1');
 					}
 
-					if (response.success) {
+					if (response && response.success) {
+						var htmlContent = (response.data && typeof response.data.html === 'string' && response.data.html.trim() !== '') 
+							? response.data.html 
+							: '<div class="ab-grid-no-posts"><p>No posts found in this category.</p></div>';
+
 						if ($sliderWrap.length) {
 							var $swiperWrapper = $sliderWrap.find('.swiper-wrapper');
-							$swiperWrapper.html(response.data.html);
+							$swiperWrapper.html(htmlContent);
 							initSlider();
 						} else if ($grid.length) {
 							if (isAppend) {
-								$grid.append(response.data.html);
+								$grid.append(htmlContent);
 							} else {
-								$grid.html(response.data.html);
+								$grid.html(htmlContent);
 							}
 						}
 
+						// Trigger window resize for layout refresh
+						$(window).trigger('resize');
+
 						// Update Load More Button state
-						if ($loadMoreBtn.length) {
+						var $currentLoadMore = $wrapper.find('.ab-load-more-btn');
+						if ($currentLoadMore.length && response.data) {
 							if (currentPage >= response.data.max_pages) {
-								$loadMoreBtn.parent().hide();
+								$currentLoadMore.parent().hide();
 							} else {
-								$loadMoreBtn.parent().show();
-								$loadMoreBtn.data('paged', currentPage);
+								$currentLoadMore.parent().show();
+								$currentLoadMore.data('paged', currentPage);
 							}
 						}
 					}
 				},
-				error: function () {
+				error: function (xhr, status) {
+					if (status === 'abort') {
+						return; // Ignore aborted requests
+					}
+					currentXHR = null;
 					$loader.fadeOut(200);
 					if ($grid.length) {
 						$grid.css('opacity', '1');
@@ -245,20 +351,37 @@
 					if ($sliderWrap.length) {
 						$sliderWrap.css('opacity', '1');
 					}
-				}
+				},
 			});
 		}
 	};
 
-	$(window).on('elementor/frontend/init', function () {
-		elementorFrontend.hooks.addAction('frontend/element_ready/ab_blog_grid.default', ABBlogGrid);
-		elementorFrontend.hooks.addAction('frontend/element_ready/ab_basic_posts.default', ABBlogGrid);
-	});
+	function hookElementor() {
+		if (typeof elementorFrontend !== 'undefined' && elementorFrontend.hooks) {
+			elementorFrontend.hooks.addAction('frontend/element_ready/ab_blog_grid.default', ABBlogGrid);
+			elementorFrontend.hooks.addAction('frontend/element_ready/ab_basic_posts.default', ABBlogGrid);
+		}
+	}
+
+	if (typeof elementorFrontend !== 'undefined' && elementorFrontend.hooks) {
+		hookElementor();
+	} else {
+		$(window).on('elementor/frontend/init', hookElementor);
+	}
 
 	// Fallback for non-elementor pages or standard jQuery ready
 	$(document).ready(function () {
-		$('.elementor-widget-ab_blog_grid, .elementor-widget-ab_basic_posts').each(function () {
+		$('.ab-blog-grid-wrapper').each(function () {
 			ABBlogGrid($(this));
+		});
+	});
+
+	$(window).on('load', function () {
+		$('.ab-blog-slider').each(function () {
+			var inst = $(this).data('ab-swiper');
+			if (inst && typeof inst.update === 'function') {
+				inst.update();
+			}
 		});
 	});
 

@@ -2,8 +2,8 @@
 /**
  * Plugin Name: AB Addon
  * Plugin URI:  https://ramdevraa.in
- * Description: Custom Elementor Addon with Blog Grid, Basic Posts widgets, Custom CSS for all elements, and a powerful Popup manager (AB Settings).
- * Version:     1.2.5
+ * Description: Custom Elementor Addon with Blog Grid, Basic Posts widgets, Custom CSS for all elements, Popup manager, and Enterprise Yoast Premium SEO Suite.
+ * Version:     1.3.0
  * Author:      Ashok Bhaargaw
  * Text Domain: ab-addon
  */
@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-define( 'AB_ADDON_VERSION', '1.2.5' );
+define( 'AB_ADDON_VERSION', '1.3.0' );
 define( 'AB_ADDON_PATH', plugin_dir_path( __FILE__ ) );
 define( 'AB_ADDON_URL', plugin_dir_url( __FILE__ ) );
 
@@ -97,6 +97,10 @@ final class AB_Addon_Elementor {
 		new AB_Slider_Shortcode();
 		require_once AB_ADDON_PATH . 'admin/class-ab-slider-settings.php';
 		new AB_Slider_Settings();
+
+		// AB SEO — Enterprise Yoast Premium SEO Suite.
+		require_once AB_ADDON_PATH . 'includes/seo/class-ab-seo.php';
+		AB_SEO::instance();
 	}
 
 	public function init() {

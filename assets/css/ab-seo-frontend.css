@@ -1,0 +1,47 @@
+/* ==========================================================================
+   AB SEO Frontend Styles (Breadcrumbs)
+   ========================================================================== */
+
+.ab-breadcrumbs {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 12px 0 20px;
+  color: #64748b;
+}
+
+.ab-breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 4px;
+}
+
+.ab-breadcrumbs__item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ab-breadcrumbs__link {
+  color: #4f46e5;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.ab-breadcrumbs__link:hover {
+  color: #3730a3;
+  text-decoration: underline;
+}
+
+.ab-breadcrumbs__separator {
+  margin: 0 6px;
+  color: #94a3b8;
+  user-select: none;
+}
+
+.ab-breadcrumbs__current {
+  color: #1e293b;
+  font-weight: 600;
+}
